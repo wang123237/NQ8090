@@ -1,0 +1,25 @@
+Modules list:
+-------------
+main.o:
+    BSS               Offs = 000000   Size = 00001F
+    ZEROPAGE          Offs = 000000   Size = 000079
+    PROG              Offs = 000000   Size = 004005
+
+
+Segment list:
+-------------
+Name                  Start   End     Size
+--------------------------------------------
+BSS                   000000  00001E  00001F
+ZEROPAGE              000080  0000F8  000079
+PROG                  00FFFC  014000  004005
+
+
+Exports list:
+-------------
+
+
+
+Imports list:
+-------------
+
