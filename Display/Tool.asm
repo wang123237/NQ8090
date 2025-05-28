@@ -66,7 +66,7 @@ L_12_24_Prog:;12小时和24小时切换
 	BBS2	Sys_Flag_B,L_12_24_Prog_5;判断是24小时制跳转退出
 	LDA		P_Temp
 	BEQ		L_12_24_Prog_1;为0是跳转
-	CMP		#11
+	CMP		#11H
 	BEQ		L_12_24_Prog_4
 	BCS		L_12_24_Prog_3;比12大时跳转
 L_12_24_Prog_4:
@@ -78,16 +78,16 @@ L_12_24_Prog_OUT:
 L_12_24_Prog_1:;0点
 	JSR		L_Dis_lcd_AM_Prog
 	JSR		L_Clr_lcd_PM_Prog
-	LDA		#12
+	LDA		#12H
 	RTS
 L_12_24_Prog_3:
 	JSR		L_Clr_lcd_AM_Prog
 	JSR		L_Dis_lcd_PM_Prog
 	LDA		P_Temp
-	CMP		#12
+	CMP		#12H
 	BEQ		L_12_24_Prog_OUT
 	SEC
-	SBC		#12
+	SBC		#12H
 	RTS
 L_12_24_Prog_5:
 	JSR		L_Clr_lcd_AM_Prog
@@ -95,26 +95,3 @@ L_12_24_Prog_5:
 	LDA		P_Temp
 	RTS
 
-
-;==================================
-L_12_To_24_Prog:
-	LDA		P_Temp+3
-	CMP		#12
-	BCC		L_AM_TO_24_Prog
-L_PM_TO_24_Prog:;入口P_Temp+5(按键给的值)，P_Temp+3原值
-	LDA		P_Temp+5
-	CMP		#12
-	BEQ		 L_PM_TO_24_Prog_RTS 
-	CLC
-	ADC		#12
-	RTS
-
-L_PM_TO_24_Prog_RTS:
-	RTS
-
-L_AM_TO_24_Prog:
-	LDA		P_Temp+5
-	CMP		#12
-	BNE		L_PM_TO_24_Prog_RTS
-	LDA		#0
-	RTS

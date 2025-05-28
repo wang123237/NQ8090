@@ -1,30 +1,55 @@
-
-;===============================================
-
-L_Display_Time_Sec_Prog:
-	LDA		R_Time_Sec
-	JMP		L_Display_lcd_Prog_Normal_Sec
-;======================================
 L_Display_Time_Min_Prog:
 	LDA		R_Time_Min
-	JMP		L_Display_lcd_Prog_Normal_Min
-;=====================================
+	AND		#0FH
+	LDX		#lcd_d4
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	LDA		R_Time_Min
+	AND		#F0H
+	LDX		#lcd_d3
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	RTS
+;==================================
 L_Display_Time_Hr_Prog:
 	LDA		R_Time_Hr
-	JMP		L_Display_lcd_Prog_Normal_Hr
-;=====================================
+	JSR		L_12_24_Prog
+	AND		#0FH
+	LDX		#lcd_d2
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	LDA		R_Time_Hr
+	AND		#F0H
+	LDX		#lcd_d1
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	RTS
+;==================================
 L_Display_Time_Day_Prog:
 	LDA		R_Time_Day
-	JMP		L_Display_lcd_Prog_Normal_Day
-;=====================================
+	AND		#0FH
+	LDX		#lcd_d15
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	LDA		R_Time_Day
+	AND		#F0H
+	LDX		#lcd_d14
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	RTS
+;==================================
 L_Display_Time_Month_Prog:
 	LDA		R_Time_Month
-	JMP		L_Display_lcd_Prog_Normal_Month
-;========================================
-L_Display_Time_Year_Prog:
-	LDA		R_Time_Year
-	JMP		L_Display_lcd_Prog_Normal_Timer
-
-;============================================
-L_Display_Time_Week_Prog:;两位显示数字的
-	
+	AND		#0FH
+	LDX		#lcd_d2
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	LDA		R_Time_Month
+	AND		#F0H
+	LDX		#lcd_d1
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	RTS
+;==================================	
+L_Display_Time_Month_Prog:
+	LDA		R_Time_Month
+	AND		#0FH
+	LDX		#lcd_d2
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	LDA		R_Time_Month
+	AND		#F0H
+	LDX		#lcd_d1
+	JSR		L_Dis_8Bit_DigitDot_Prog
+	RTS

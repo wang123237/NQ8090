@@ -1,4 +1,5 @@
 L_Alarm_Prog:;闹钟判断的时间是贪睡闹钟时间，而正常闹钟时间作为显示闹钟时间
+	BBR1	Sys_Flag_C,L_Alarm_Prog_OUT
 	BBS4	Sys_Flag_C,L_Alarm_Prog_OUT
 
 	LDA		R_Time_Sec

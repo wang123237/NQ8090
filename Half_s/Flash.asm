@@ -73,6 +73,9 @@ Table_Usually:
 	DW		L_Clr_lcd_d5_Prog-1
 	DW		L_Clr_lcd_d7_Prog-1
 	DW		L_Clr_lcd_d8_Prog-1
+
+
+	
 L_SysFlash_Set_Mode_Prog_Time_Sec:
 	JSR		L_Clr_lcd_d8_Prog
 	JSR		L_Clr_lcd_d7_Prog

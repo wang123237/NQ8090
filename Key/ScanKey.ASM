@@ -3,9 +3,6 @@ L_LCD_IRQ_WorkProg:;
 	BBR0	Sys_Flag_A,L_END_LCD_IRQ_WorkProg;32hz扫键
 	RMB0	Sys_Flag_A
 	JSR		L_control_Beep_prog
-	; JSR		L_Update_Timer_Ms_Prog
-	; LDA		R_Reset_Time
-	; BNE		L_END_LCD_IRQ_WorkProg
 	JSR		L_Scankey_Prog
 L_END_LCD_IRQ_WorkProg:
     RTS	
@@ -13,9 +10,7 @@ L_END_LCD_IRQ_WorkProg:
 L_ScanKey_Null_Prog:;如果编码器没有开启退出并且扫描到空键，停止按键扫描	
 	LDA		R_Voice_Unit
 	BNE		L_END_LCD_IRQ_WorkProg
-	; BBS0	Sys_Flag_D,L_END_LCD_IRQ_WorkProg
 	DIS_LCD_IRQ
-	JSR		L_Judgement_Scankey_Prog
 	RTS
 L_Scankey_Prog_Ineffective:
 	
