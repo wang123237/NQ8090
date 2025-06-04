@@ -72,6 +72,7 @@ L_Update_Time_Year_Prog:;时间年更新加
 L_Inc_To_60_Prog:;将数从0加到59
 	LDA		#59H	
 L_Inc_To_Any_Count_Prog:
+	SED
 	SEC
 	SBC		Time_Addr,X
 	BEQ		L_Inc_Over_Prog
@@ -81,15 +82,18 @@ L_Inc_To_Any_Count_Prog:
 	ADC		#1
 	STA		Time_Addr,X
 	CLC
+	CLD
 	RTS
 L_Inc_Over_Prog:
 	LDA		#0
 	STA		Time_Addr,X
+	CLD
 	SEC
 L_End_Inc_To_60_Prog:	
 	RTS
 
 L_Inc_To_Any_Count_Prog_To_1:;将数从1加到59
+	SED
 	SEC
 	SBC		Time_Addr,X
 	BEQ		L_Inc_Over_Prog_To_1
@@ -98,10 +102,12 @@ L_Inc_To_Any_Count_Prog_To_1:;将数从1加到59
 	LDA		Time_Addr,X
 	ADC		#1
 	STA		Time_Addr,X
+	CLD
 	RTS
 L_Inc_Over_Prog_To_1:
 	LDA		#1
 	STA		Time_Addr,X
+	CLD
 	RTS
 ;=======================================================
 L_Dec_To_60_Prog:
@@ -110,6 +116,7 @@ L_Dec_To_0_Prog:
 	STA		P_Temp
 	LDA		#0
 L_Dec_To_Anycount_Prog:
+	SED
 	SEC
     SBC     Time_Addr,X
 	BEQ		L_Dec_Over_Prog
@@ -119,15 +126,18 @@ L_Dec_To_Anycount_Prog:
 	LDA		Time_Addr,X
 	SBC		#1
 	STA		Time_Addr,X
+	CLD
 	SEC
 	RTS
 L_Dec_Over_Prog:
 	LDA		P_Temp
 	STA		Time_Addr,X
+	CLD
 	CLC	
 	RTS
 L_Dec_To_1_Prog:
     STA     P_Temp
+	SED
     LDA     #1
     BRA     L_Dec_To_Anycount_Prog
 ;===============================================
@@ -136,10 +146,13 @@ L_Dec_To_1_Prog:
 ;=====================================
 L_Check_MaxDay_Prog:;检查每月的最大天数
 	LDA		R_Time_Month
+	JSR		L_DToHx_Prog
 	DEC
 	TAX	
 L_Check_MaxDay_Prog_Alarm_clock_Prog:
-	BBS3	Sys_Flag_B,L_Check_LeapYear_MaxDay_Prog
+	LDA		Sys_Flag_B
+	AND		#08H
+	BNE		L_Check_LeapYear_MaxDay_Prog
 	LDA		T_NoLeapYear_Month,X
 	RTS
 L_Check_LeapYear_MaxDay_Prog:
@@ -160,13 +173,16 @@ L_Judge_MaxDay_Prog_RTS:
 ;==================================
 L_Check_LeapYear_Prog:;检查是否是闰年
 	LDA		R_Time_Year
+	JSR		L_DToHx_Prog
 	STA		P_Temp
 	CLC		
 	ROR		P_Temp
 	LDX		P_Temp
 	LDA		T_LeapYear_Week,X
 	STA		P_Temp
-	BBR0	R_Time_Year,L_Counter_LeapYear;建表从2000年开始处于低四位，高四位，需要右移四位
+	LDA		R_Time_Year
+	AND		#01H
+	BEQ		L_Counter_LeapYear;建表从2000年开始处于低四位，高四位，需要右移四位
 	CLC		
 	ROR		P_Temp
 	CLC		
@@ -189,10 +205,13 @@ L_Auto_Counter_Week:
 	JSR		L_Check_LeapYear_Prog
 	JSR		L_Judge_MaxDay_Prog
 	LDA		R_Time_Month
+	JSR		L_DToHx_Prog
 	TAX	
 	LDA		T_Month_Week,X
 	STA		P_Temp+1
-	BBR3	Sys_Flag_B,L_Counter_Week_2;非闰年跳转，非闰年需要将右移四位
+	LDA		Sys_Flag_B
+	AND		#08H
+	BEQ		L_Counter_Week_2;非闰年跳转，非闰年需要将右移四位
 	CLC		
 	ROR		P_Temp+1
 	CLC		
@@ -207,6 +226,7 @@ L_Counter_Week_2:;十六进制运算
 	STA		P_Temp+1
 	LDA		#7
 	AND		P_Temp;保留低三位位每年一月一号星期几
+	SED
 	CLC
 	ADC		P_Temp+1;每年一月一日星期几加上日期再加上多余的天数
 	ADC		R_Time_Day
@@ -217,18 +237,19 @@ L_Loop_WeekSub_7:
 	SBC		#7
 	BCC		L_End_Counter_Week
 	STA		P_Temp
-	JMP		L_Loop_WeekSub_7
+	BRA		L_Loop_WeekSub_7
 L_End_Counter_Week:
 	LDA		P_Temp		
 	BEQ		L_SetWeek_Sat
 	DEC		P_Temp
-	JMP		L_Exit_Counter_Week
+	BRA		L_Exit_Counter_Week
 L_SetWeek_Sat:
 	LDA		#6
 	STA		P_Temp
 L_Exit_Counter_Week:
 	LDA		P_Temp
 	STA		R_Time_Week
+	CLD
 	RTS
 ;===============================================
 ;-------------------------------------------

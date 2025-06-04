@@ -17,7 +17,6 @@ L_Scankey_Prog_Ineffective:
 	JSR		L_Scankey_usually_Prog
 	LDA		P_Scankey_value_Temporary
 	BNE		L_END_LCD_IRQ_WorkProg;如果为0则执行空键程序
-	JSR		L_Judgement_Scankey_Prog
 	JSR		L_ScanKey_Delay_Prog
 
 	RMB5	Sys_Flag_A;清空无效标志位
@@ -33,7 +32,6 @@ L_Scankey_Prog:
 	BBS5	Sys_Flag_A,L_Scankey_Prog_Ineffective
 	BBS1	Sys_Flag_A,L_Scankey_Prog_First_TO;首次扫描判断
 	
-	BBS6	Sys_Flag_A,L_Scankey_Prog_Long_Press;快加情况
 	
 	BBR2	Sys_Flag_A,L_ScanKey_Null_Prog;没有按键扫描标志
 	

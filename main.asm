@@ -21,7 +21,6 @@ PROG	SECTION	OFFSET	CODE_BEG                ;定义代码段的偏移量从CODE_
 	.INCLUDE	RAM.INC	
 	.include	50P016.mac
 	.INCLUDE	MACRO.MAC
-	.INCLUDE	Calculator\Calculator_MAC.asm
 ;***************************************
 STACK_BOT		EQU		FFH                     ;堆栈底部
 ;***************************************
@@ -39,7 +38,9 @@ V_RESET:
 ;***************************************	
 	ClrAllRam	;清空ram
 	WDTC_CLR	
-	;CHECK_LCD   ;初始化LCD
+	CHECK_LCD   ;初始化LCD
+	LDA		#43
+	STA		FRAME
 ;***************************************定时器初始化，特殊功能寄存器初始化
 	LDA		#0
 	STA		PADF1  ;定时器0的时钟源选择
@@ -55,22 +56,22 @@ V_RESET:
 ;***************************************LCD初始化
 	LCD_C_TYPE
 	LCD_ENCH_EN
-	;LCD_4COM
+	LCD_8COM
 	LCD_DRIVE_8
-	RMB2	LCDCTRL
-	SMB3	LCDCTRL
-	RMB0	P_LCD_COM
-	SMB1	P_LCD_COM;设置为5com
-	RMB5	P_LCD_COM;设置LCD中断频率为32Hz
+	LCD_C_1_3_BAIS_4V
 ;***************************************端口配置（等待图纸）
 	JSR		L_Scankey_INIT
 	SMB0	P_SYSCLK
-	PB2_PB2_NOMS
+
+
+	PB2_PB2_COMS
 	PB3_PB3_NOMS
-	LDA		#0
-	STA		PCSEG	
+
+	PC67_SEG
+	PC45_SEG
 	PD03_SEG
-	PD47_SEG;
+	PD47_PD47
+
 	JSR		L_Init_SystemRam_Prog   ;初始化系统RAM并禁用所有断电保留的RAM
 	JSR		L_Dis_All_DisRam_Prog	;初始化系统RAM并禁用所有断电保留的RAM
 ;***************************************开启中断	
@@ -92,18 +93,21 @@ V_RESET:
 ;***********************************************************************
 MainLoop:	
 
-	JSR		L_Update_Timer_Ms_Prog
-	JSR		L_LCD_IRQ_WorkProg
-	JSR		L_Half_Second_Prog
+	; JSR		L_Update_Timer_Ms_Prog
+	; JSR		L_LCD_IRQ_WorkProg
+	; JSR		L_Half_Second_Prog
 	LDA		R_Voice_Unit
 	BNE		MainLoop
 
-	SMB4	SYSCLK;280k
-	STA		P_HALT	
+
+	Fsys_500k
+	
 	NOP
 	NOP
 	NOP
-	RMB4	SYSCLK;560k
+	STA		P_HALT
+	Fsys_2MHZ
+
 	BRA		MainLoop		
 
 ;***********************************************************************
@@ -130,7 +134,6 @@ L_Timer2Irq:
 	CLR_TMR2_IRQ_FLAG
 	WDTC_CLR	
 	SMB1	Sys_Flag_D
-	INC		R_Timer_X
 	BRA		L_EndIrq
 	
 L_Timer0Irq:
@@ -176,18 +179,18 @@ L_EndIrq:
 ; .INCLUDE	Display\Display_Alarm.asm
 ; .INCLUDE	Display\Display_Symbol.asm
 ; .INCLUDE	Display\Display_Normal.asm
-; .INCLUDE	Display\Tool.asm
+.INCLUDE	Display\Tool.asm
 ; 
 ; 
 ; 
 ; 
 ; 
 ; 
-.INCLUDE	Half_s\Half.asm
+; .INCLUDE	Half_s\Half.asm
 .INCLUDE	Half_s\Clock.asm
-.INCLUDE	Half_s\Alarm_Clock.asm
-.INCLUDE	Half_s\Common.asm
-.INCLUDE	Half_s\Flash.asm
+; .INCLUDE	Half_s\Alarm_Clock.asm
+; .INCLUDE	Half_s\Common.asm
+; .INCLUDE	Half_s\Flash.asm
 ; 
 ; .INCLUDE	Sound\Beep.asm
 

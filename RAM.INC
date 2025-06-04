@@ -5,7 +5,6 @@
 RamStarAddr			EQU		1800H   ;RAM的开始地址
 LCD_RamAddr			EQU		RamStarAddr     ;LCD RAM的地址
 Time_Addr			EQU		RamStarAddr+Time_Str_Addr-Page0RamStarAddr
-Cal_Addr			EQU		RamStarAddr+Calculator_Str_Addr-Page0RamStarAddr
 RAM					EQU		80H
 ;***************************************
 ;Time_Addr		EUQ		B0H
@@ -50,13 +49,13 @@ Sys_Flag_C				DS	1	;闹钟模式的系统状态
 ; bit6	=
 ; bit7	=1
 Sys_Flag_D				DS	1	;计时器模式的系统状态
-; bit0 	=1正计时开启计时
-; bit1	=1,32HZ标志
-; bit2	=1第一次倒计时
+; bit0 	=1正计时/倒计时开启计时
+; bit1	=开始或者暂停计时
+; bit2	=第一次倒计时
 ; bit3	=
 ; bit4 	=定时器闹铃
-; bit5 	=0无中途测量，1中途测量
-; bit6	=第一次进入补偿标志
+; bit5 	=
+; bit6	=
 ; bit7	=
 R_Reset_Time					DS	1;全显时间,一般为2s
 	
@@ -70,8 +69,11 @@ P_Scankey_value_T_1			DS	1
 P_Scankey_value				DS	1;按键存储值
 P_Scankey_value_Temporary	DS	1;按键临时储存
 
-
-
+D_Date_Time_Press			.EQU	00010000B
+D_12_24_Hour_Press			.EQU	00100000B
+D_ALM_Press					.EQU	01000000B
+D_Voice_Press				.EQU	10000000B
+D_KNOB_Press				.EQU	00000100B
 ;---------------------------------------
 Time_Str_Addr	EQU		$	
 R_Time_Sec						DS	1;时钟的秒数;	
@@ -82,27 +84,36 @@ R_Time_Month 					DS	1;月
 R_Time_Year						DS	1;年
 R_Time_Week						DS	1;0是星期天，1是星期一---
 
-R_Time_Min_Another				DS	1;第二时间的分钟
-R_Time_Hr_Another				DS	1;第二时间的小时
 
-R_Timer_Ms						DS	1;定时器10ms次数
+
+
+
 R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
 R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
-R_Timer_Hr						DS	1;定时器显示时间/正计时时间小时
-R_Timer_X						DS	1
-R_Timer_X_1						DS	1
+; R_Timer_Hr						DS	1;定时器显示时间/正计时时间小时
+R_Timer_Sec_Backup				DS	1;定时器显示时间/正计时时间秒数
+R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
+; R_Timer_Hr_Backup				DS	1;定时器显示时间/正计时时间小时
+Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
+Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
+Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
+Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
+Timer_TurnPlate_Frequeny		DS	1;转盘数
 
-R_Timer_Hr_Measurement			EQU	BUF4
-R_Timer_Min_Measurement			EQU	BUF4+1
-R_Timer_Sec_Measurement			EQU	BUF4+2
-R_Timer_Ms_Measurement			EQU	BUF4+3
+
+
+
+; R_Alarm_Cloc？k_Mode_Dis			DS	1;显示不同的闹钟模式
+R_Alarm_Clock_Mode				DS	5;0是关闭闹钟，1是一次性闹钟，2是每天闹钟，3是工作日闹钟，5是周末闹钟
+
+R_Alarm_Clock_Hr				DS	5
+R_Alarm_Clock_Min				DS	5
+
+R_Snz_Time						DS	5
+
 
 
 D_Beep_Open_Last_Time_Alarm		EQU	21
-
-R_Alarm_Clock_Min				DS	1;闹钟的分钟;	10
-R_Alarm_Clock_Hr 				DS	1;闹钟的小时;	11
-R_Alarm_Mode					DS	1;闹钟的模式，0是闹钟关闭，1是闹钟开启，2是循环闹铃
 
 
 D_Snz_Time						EQU	5
@@ -110,7 +121,6 @@ D_Snz_Frequency					EQU	6
 
 
 R_Mode_Set					DS	1;设置模式
-
 
 
 
@@ -132,6 +142,6 @@ D_Set_Mode_Exit_Time			EQU	6
 R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
 R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
 R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
-
+R_Mode							DS	1
 
 .ENDS
