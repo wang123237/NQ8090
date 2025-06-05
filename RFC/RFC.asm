@@ -242,13 +242,15 @@ T_RFCTable2:
 ;======================================================
 F_RfcTest:
 		DIV_256HZ					;设置分频器为256HZ
+		Fsys_4MHZ					;ET50P016特有
 		; Fsys_Fosc_1
 		Fcpu_Fext					;切换外部时钟
 		NOP
 		Fosc_OFF					;关闭主振荡器
 		NOP
 		SEI							;关闭全局中断
-		PD03_RFC	
+
+		PD47_RFC	
 		ldx		#2	;#1				;选择RFC通道2
   		lda		#C_RfcTime			;测量周期
 		jsr		F_GetFrcMode0
@@ -269,48 +271,48 @@ F_RfcTest:
 		LDA		#$00
 		STA 	R_RT_H				;将读取的值储存起来，测量的是温度电阻RT
 		
-		ldx		#0	;#2	;
-  		lda		#C_RfcTime
-		jsr		F_GetFrcMode0		
-		LDA 	P_TMR0
-		STA 	R_RH_L
-		LDA 	P_TMR1
-		STA 	R_RH_M
-		LDA		#$00
-		STA 	R_RH_H				;将读取的值储存起来，测量的是湿度电阻RH
+		; ldx		#0	;#2	;
+  		; lda		#C_RfcTime
+		; jsr		F_GetFrcMode0		
+		; LDA 	P_TMR0
+		; STA 	R_RH_L
+		; LDA 	P_TMR1
+		; STA 	R_RH_M
+		; LDA		#$00
+		; STA 	R_RH_H				;将读取的值储存起来，测量的是湿度电阻RH
 		
 		Fosc_ON
 		NOP
-		Fsys_Fosc_2		
+		Fsys_2MHZ	
 		Fcpu_Fsys
 		NOP
 		CLI
 		JSR		L_Counter_Temperature_Prog		
-		JSR		L_Counter_Humidity_Prog
+		; JSR		L_Counter_Humidity_Prog
 		RTS	
 ;=======================================================
-F_Delay100Ms:
-		ldx	#$FE	;#E0H
-L_WaitLoop1:
-		lda	#0
-L_WaitLoop:
-		clc
-		adc	#1
-		bne	L_WaitLoop
-		inx
-		bne	L_WaitLoop1
-		rts
-F_Delay2000Ms:
-		LDX #0
-L_2WaitLoop1:
-		lda	#0
-L_2WaitLoop:
-		clc
-		adc	#1
-		bne	L_2WaitLoop
-		inx
-		bne	L_2WaitLoop1
-		rts
+; F_Delay100Ms:
+; 		ldx	#$FE	;#E0H
+; L_WaitLoop1:
+; 		lda	#0
+; L_WaitLoop:
+; 		clc
+; 		adc	#1
+; 		bne	L_WaitLoop
+; 		inx
+; 		bne	L_WaitLoop1
+; 		rts
+; F_Delay2000Ms:
+; 		LDX #0
+; L_2WaitLoop1:
+; 		lda	#0
+; L_2WaitLoop:
+; 		clc
+; 		adc	#1
+; 		bne	L_2WaitLoop
+; 		inx
+; 		bne	L_2WaitLoop1
+; 		rts
 ;==================================
 ;F_WaitKey:
 ;		lda	<P_PA

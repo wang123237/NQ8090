@@ -1,4 +1,4 @@
-Tue Jun 03 17:54:12 2025
+Thu Jun 05 15:20:22 2025
 -------------------------
 CAS V2.15.1-rc1 - (C) Copyright 2000-2012 CHIPMAST TECHNOLOGY CO. LTD.
 Main file   : main.asm
@@ -172,8 +172,8 @@ Current file: main.asm
     46                        ; bit3	=
     47                        ; bit4 	=闹钟闹铃
     48                        ; bit5 	=1按键音开启
-    49                        ; bit6	=
-    50                        ; bit7	=1
+    49                        ; bit6	=0响闹/1静音
+    50                        ; bit7	=
     51 00:00A2: xx            Sys_Flag_D				DS	1	;计时器模式的系统状态
     52                        ; bit0 	=1正计时/倒计时开启计时
     53                        ; bit1	=开始或者暂停计时
@@ -183,99 +183,144 @@ Current file: main.asm
     57                        ; bit5 	=
     58                        ; bit6	=
     59                        ; bit7	=
-    60 00:00A3: xx            R_Reset_Time					DS	1;全显时间,一般为2s
-    61                        
-    62 00:00A4: xx            R_Scankey_Time					DS	1;按键按下的时间
-    63                        D_Rscankey_Half_Sec				EQU	16;按键时间
-    64                        D_Rscankey_Sec					EQU	32
-    65                        D_Rscankey_TWO_Sec				EQU	64
-    66                        
-    67                        
-    68 00:00A5: xx            P_Scankey_value_T_1			DS	1
-    69 00:00A6: xx            P_Scankey_value				DS	1;按键存储值
-    70 00:00A7: xx            P_Scankey_value_Temporary	DS	1;按键临时储存
+    60 00:00A3: xx            Sys_Flag_E				DS	1	 ;编码器必备标志
+    61                        ; bit0 	=	0正旋转/1反旋转
+    62                        ; bit1	=
+    63                        ; bit2	=
+    64                        ; bit3
+    65                        ; bit4 	=
+    66                        ; bit5 	=
+    67                        ; bit6	=
+    68                        ; bit7	=
+    69                        
+    70 00:00A4: xx            R_Reset_Time					DS	1;全显时间,一般为2s
     71                        
-    72                        D_Date_Time_Press			.EQU	00010000B
-    73                        D_12_24_Hour_Press			.EQU	00100000B
-    74                        D_ALM_Press					.EQU	01000000B
-    75                        D_Voice_Press				.EQU	10000000B
-    76                        ;---------------------------------------
-    77                        Time_Str_Addr	EQU		$
-    78 00:00A8: xx            R_Time_Sec						DS	1;时钟的秒数;
-    79 00:00A9: xx            R_Time_Min						DS	1;时钟的分钟数;
-    80 00:00AA: xx            R_Time_Hr 						DS	1;时钟的小时数;
-    81 00:00AB: xx            R_Time_Day 						DS	1;日
-    82 00:00AC: xx            R_Time_Month 					DS	1;月
-    83 00:00AD: xx            R_Time_Year						DS	1;年
-    84 00:00AE: xx            R_Time_Week						DS	1;0是星期天，1是星期一---
-    85                        
-    86                        
-    87                        
-    88                        
-    89                        
-    90 00:00AF: xx            R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
-    91 00:00B0: xx            R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
-    92 00:00B1: xx            R_Timer_Hr						DS	1;定时器显示时间/正计时时间小时
-    93 00:00B2: xx            R_Timer_Sec_Backup				DS	1;定时器显示时间/正计时时间秒数
-    94 00:00B3: xx            R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
-    95 00:00B4: xx            R_Timer_Hr_Backup				DS	1;定时器显示时间/正计时时间小时
-    96 00:00B5: xx            Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
-    97 00:00B6: xx            Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
-    98 00:00B7: xx            Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
-    99 00:00B8: xx            Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
-   100 00:00B9: xx            Timer_TurnPlate_Frequeny		DS	1;转盘数
+    72 00:00A5: xx            R_Scankey_Time					DS	1;按键按下的时间
+    73                        D_Rscankey_Half_Sec				EQU	16;按键时间
+    74                        D_Rscankey_Sec					EQU	32
+    75                        D_Rscankey_TWO_Sec				EQU	64
+    76                        
+    77                        
+    78 00:00A6: xx            P_Scankey_value_T_1			DS	1
+    79 00:00A7: xx            P_Scankey_value				DS	1;按键存储值
+    80 00:00A8: xx            P_Scankey_value_Temporary	DS	1;按键临时储存
+    81                        
+    82                        D_Scankey_Value				.EQU	11110100B
+    83                        D_Date_Time_Press			.EQU	00010000B
+    84                        D_12_24_Hour_Press			.EQU	00100000B
+    85                        D_ALM_Press					.EQU	01000000B
+    86                        D_Voice_Press				.EQU	10000000B
+    87                        D_KNOB_Press				.EQU	00000100B
+    88                        D_Konb_Value				.EQU	00000011B
+    89                        ;---------------------------------------
+    90                        Time_Str_Addr	EQU		$
+    91 00:00A9: xx            R_Time_Sec						DS	1;时钟的秒数;
+    92 00:00AA: xx            R_Time_Min						DS	1;时钟的分钟数;
+    93 00:00AB: xx            R_Time_Hr 						DS	1;时钟的小时数;
+    94 00:00AC: xx            R_Time_Day 						DS	1;日
+    95 00:00AD: xx            R_Time_Month 					DS	1;月
+    96 00:00AE: xx            R_Time_Year						DS	1;年
+    97 00:00AF: xx            R_Time_Week						DS	1;0是星期天，1是星期一---
+    98                        
+    99                        
+   100                        
    101                        
    102                        
-   103                        
-   104                        
-   105 00:00BA: xx            R_Alarm_Clock_Mode_Dis			DS	1;显示不同的闹钟模式
-   106 00:00BB: xx xx xx xx   R_Alarm_Clock_Mode				DS	5;0是关闭闹钟，1是一次性闹钟，2是每天闹钟，3是工作日闹钟，5是周末闹钟
-   106 00:00BB: xx            
-   107                        
-   108 00:00C0: xx xx xx xx   R_Alarm_Clock_Hr				DS	5
-   108 00:00C0: xx            
-   109 00:00C5: xx xx xx xx   R_Alarm_Clock_Min				DS	5
-   109 00:00C5: xx            
-   110                        
-   111 00:00CA: xx xx xx xx   R_Snz_Time						DS	5
-   111 00:00CA: xx            
+   103 00:00B0: xx            R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
+   104 00:00B1: xx            R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
+   105 00:00B2: xx            R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
+   106 00:00B3: xx            Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
+   107 00:00B4: xx            Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
+   108 00:00B5: xx            Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
+   109 00:00B6: xx            Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
+   110 00:00B7: xx            Timer_TurnPlate_Frequeny		DS	1;转盘数
+   111                        
    112                        
-   113                        
+   113 00:00B8: xx xx xx xx   R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
+   113 00:00B8: xx            
    114                        
-   115                        D_Beep_Open_Last_Time_Alarm		EQU	21
-   116                        
-   117                        
-   118                        D_Snz_Time						EQU	5
-   119                        D_Snz_Frequency					EQU	6
+   115 00:00BD: xx xx xx xx   R_Alarm_Clock_Hr				DS	5
+   115 00:00BD: xx            
+   116 00:00C2: xx xx xx xx   R_Alarm_Clock_Min				DS	5
+   116 00:00C2: xx            
+   117 00:00C7: xx xx xx xx   R_Snz_Time						DS	5
+   117 00:00C7: xx            
+   118                        
+   119                        
    120                        
-   121                        
-   122 00:00CF: xx            R_Mode_Set					DS	1;设置模式
+   121                        D_Beep_Open_Last_Time_Alarm		EQU	21
+   122                        
    123                        
-   124                        
-   125                        
-   126                        ;---------------------------------------
-   127 00:00D0: xx xx xx xx   P_Temp			ds	8
-   127 00:00D0: xx xx xx xx   
-   128                        ;显示从写P_Temp+4
-   129                        ;---------------------------------------
-   130                        ;---------------------------------------
-   131                        ;***************************************
-   132                        .ENDS
-   133                        ;***************************************
-   134                        .Udata
-   135                        ;---------------------------------------
-   136                        	ORG    1880H
-   137                        ;---------------------------------------
-   138                        ;---------------------------------------
-   139 00:1880: xx            R_Set_Mode_Exit_Time			DS	1;自动设置退出时间
-   140                        D_Set_Mode_Exit_Time			EQU	6
-   141 00:1881: xx            R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
-   142 00:1882: xx            R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
-   143 00:1883: xx            R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
+   124                        D_Snz_Time						EQU	5
+   125                        D_Snz_Frequency					EQU	6
+   126                        
+   127                        
+   128 00:00CC: xx            R_Mode_Set					DS	1;设置模式
+   129                        
+   130 00:00CD: xx            Konb_Last_State				DS	1
+   131                        
+   132                        
+   133                        
+   134 00:00CE: xx xx xx xx   P_Temp			ds	16
+   134 00:00CE: xx xx xx xx   
+   134 00:00CE: xx xx xx xx   
+   135                        R_Tmp0	equ	P_Temp
+   136                        R_Tmp1	equ	P_Temp+1
+   137                        R_Tmp2	equ	P_Temp+2
+   138                        R_Tmp3	equ	P_Temp+3
+   139                        lcd_tmp_mask	equ	P_Temp+9
+   140                        lcd_tmp_bit		equ	P_Temp+10
+   141                        
+   142                        ;==============================温湿度内存
+   143                        
    144                        
    145                        
-   146                        .ENDS
-   146                        
+   146 00:00DE: xx            R_RT_L					DS	1		;温度电阻
+   147 00:00DF: xx            R_RT_M					DS  1
+   148 00:00E0: xx            R_RT_H                  DS  1
+   149 00:00E1: xx            R_RR_L					DS	1		;标准电阻
+   150 00:00E2: xx            R_RR_M                  DS  1
+   151 00:00E3: xx            R_RR_H                  DS  1
+   152 00:00E4: xx            R_RH_L					DS	1		;湿度电阻
+   153 00:00E5: xx            R_RH_M                  DS  1
+   154 00:00E6: xx            R_RH_H                  DS  1
+   155                        ;R_Measure_Temperature   DS
+   156 00:00E7: xx            R_Temperature        	DS	1		;温度
+   157 00:00E8: xx            R_Temperature_L      	DS  1		;是否为零下温度
+   158                        ;R_Temperature_F_M		DS  1
+   159                        ;R_Temperature_F_H		DS  1
+   160                        
+   161                        ; R_Humidity				DS  1
+   162                        ;
+   163                        ; R_Humidity_Level		DS  1
+   164 00:00E9: xx            R_RFCCH					DS	1
+   165                        ; R_KeyCnt				DS	1
+   166                        
+   167                        
+   168                        
+   169                        
+   170                        ;---------------------------------------
+   171                        
+   172                        ;显示从写P_Temp+4
+   173                        ;---------------------------------------
+   174                        ;---------------------------------------
+   175                        ;***************************************
+   176                        .ENDS
+   177                        ;***************************************
+   178                        .Udata
+   179                        ;---------------------------------------
+   180                        	ORG    1880H
+   181                        ;---------------------------------------
+   182                        ;---------------------------------------
+   183 00:1880: xx            R_Set_Mode_Exit_Time			DS	1;自动设置退出时间
+   184                        D_Set_Mode_Exit_Time			EQU	6
+   185 00:1881: xx            R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
+   186 00:1882: xx            R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
+   187 00:1883: xx            R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
+   188 00:1884: xx            R_Mode							DS	1
+   189                        
+   190                        .ENDS
+   190                        
     22                        	.include	50P016.mac
      1                        ;------------------------------------
      2                        PB2_PB2_COMS MACRO
@@ -1322,17 +1367,17 @@ Current file: main.asm
 +   41 00:C028: 73 07          LDA P_PC
 +   41 00:C02A: 51 02          AND #$0002
 +   41                        ?_Loop
-+   41 00:C02C: 7F D1          STA P_Temp+$0001
++   41 00:C02C: 7F CF          STA P_Temp+$0001
 +   41 00:C02E: 53 0F          LDA #$000F
 +   41                        ?_LoopPort
 +   41 00:C030: 07             DEC
 +   41 00:C031: 12 FD          BNE ?_LoopPort
 +   41 00:C033: 73 07          LDA P_PC
 +   41 00:C035: 51 02          AND #$0002
-+   41 00:C037: 7F D0          STA P_Temp
-+   41 00:C039: 76 D1          CMP P_Temp+$0001
++   41 00:C037: 7F CE          STA P_Temp
++   41 00:C039: 76 CF          CMP P_Temp+$0001
 +   41 00:C03B: 12 EF          BNE ?_Loop
-+   41 00:C03D: 39 D0 1D       BBS1 P_Temp,?LCD_R_Type
++   41 00:C03D: 39 CE 1D       BBS1 P_Temp,?LCD_R_Type
 +   41                        ?LCD_C_Type:
 +   41                         LCD_C_TYPE
 +   41 00:C040: 2F 1A          SMB7 LCDCOM
@@ -1546,12 +1591,12 @@ Current file: main.asm
      1                        ;------------------------------------------------------
      2                        L_Init_SystemRam_Prog:     ;初始化系统RAM的程序数据
      3 00:C134: 53 04         	LDA		#4
-     4 00:C136: 7F A3         	STA		R_Reset_Time
+     4 00:C136: 7F A4         	STA		R_Reset_Time
      5 00:C138: 53 19         	LDA		#25
-     6 00:C13A: 7F AD         	STA		R_Time_Year
+     6 00:C13A: 7F AE         	STA		R_Time_Year
      7 00:C13C: 53 01         	LDA		#1
-     8 00:C13E: 7F AB         	STA		R_Time_Day
-     9 00:C140: 7F AC         	STA		R_Time_Month
+     8 00:C13E: 7F AC         	STA		R_Time_Day
+     9 00:C140: 7F AD         	STA		R_Time_Month
     10                        	; LDA		#4
     11                        	; STA		R_Mode
     12                        	; JSR		L_Auto_Counter_Week
@@ -1642,7 +1687,7 @@ Current file: main.asm
    164                        
    165                        ; .INCLUDE	Key\ScanKey.ASM
    166                        ; .INCLUDE	Key\Scankey_First_Press.asm
-   167                        ; .INCLUDE	Key\Scankey_First_Set_Mode.asm
+   167                        ; .INCLUDE	Key\Konb_Change.asm
    168                        ; .INCLUDE	Key\Scankey_First_Press_Judgment.asm
    169                        ; .INCLUDE	Key\Scankey_Normal.asm
    170                        ; .INCLUDE	Key\ScanKey_Function_Time.ASM
@@ -1659,35 +1704,35 @@ Current file: main.asm
    181                        ; .INCLUDE	Display\Display_Normal.asm
    182                        .INCLUDE	Display\Tool.asm
      1                        L_A_HexToHexD:
-     2 00:C19C: 7F D0         	STA		P_Temp								; 将十进制输入保存到 P_Temp
+     2 00:C19C: 7F CE         	STA		P_Temp								; 将十进制输入保存到 P_Temp
      3 00:C19E: 53 00         	LDA		#0									; 初始化高位寄存器
-     4 00:C1A0: 7F D1         	STA		P_Temp+1							; 高位清零
-     5 00:C1A2: 7F D2         	STA		P_Temp+2							; 低位清零
+     4 00:C1A0: 7F CF         	STA		P_Temp+1							; 高位清零
+     5 00:C1A2: 7F D0         	STA		P_Temp+2							; 低位清零
      6                        
      7                        L_DecToHex_Loop:
-     8 00:C1A4: 73 D0         	LDA		P_Temp								; 读取当前十进制值
+     8 00:C1A4: 73 CE         	LDA		P_Temp								; 读取当前十进制值
      9 00:C1A6: 56 0A         	CMP		#10
     10 00:C1A8: 10 09         	BCC		L_DecToHex_End						; 如果小于16，则跳到结束
     11                        
     12 00:C1AA: 00            	SEC											; 启用借位
     13 00:C1AB: 55 0A         	SBC		#10									; 减去16
-    14 00:C1AD: 7F D0         	STA		P_Temp								; 更新十进制值
-    15 00:C1AF: 78 D1         	INC		P_Temp+1							; 高位+1，累加十六进制的十位
+    14 00:C1AD: 7F CE         	STA		P_Temp								; 更新十进制值
+    15 00:C1AF: 78 CF         	INC		P_Temp+1							; 高位+1，累加十六进制的十位
     16                        
     17 00:C1B1: 17 F1         	BRA		L_DecToHex_Loop						; 重复循环
     18                        
     19                        L_DecToHex_End:
-    20 00:C1B3: 73 D0         	LDA		P_Temp								; 最后剩余的值是低位
-    21 00:C1B5: 7F D2         	STA		P_Temp+2							; 存入低位
+    20 00:C1B3: 73 CE         	LDA		P_Temp								; 最后剩余的值是低位
+    21 00:C1B5: 7F D0         	STA		P_Temp+2							; 存入低位
     22                        
-    23 00:C1B7: 73 D1         	LDA		P_Temp+1							; 将高位放入A寄存器准备结果组合
+    23 00:C1B7: 73 CF         	LDA		P_Temp+1							; 将高位放入A寄存器准备结果组合
     24 00:C1B9: 04            	CLC
     25 00:C1BA: 18            	ROL
     26 00:C1BB: 18            	ROL
     27 00:C1BC: 18            	ROL
     28 00:C1BD: 18            	ROL											; 左移4次，完成乘16
     29 00:C1BE: 04            	CLC
-    30 00:C1BF: 74 D2         	ADC		P_Temp+2							; 加上低位值
+    30 00:C1BF: 74 D0         	ADC		P_Temp+2							; 加上低位值
     31                        
     32 00:C1C1: 09            	RTS
     33                        
@@ -1720,25 +1765,25 @@ Current file: main.asm
     60                        ; 	LDA		P_Temp+2
     61                        ; 	RTS
     62                        L_DToHx_Prog:		;十进制转十六进制
-    63 00:C1C2: 7F D6         	STA		P_Temp+6
+    63 00:C1C2: 7F D4         	STA		P_Temp+6
     64 00:C1C4: 51 F0         	AND		#$F0
-    65 00:C1C6: 7F D7         	STA		P_Temp+7
+    65 00:C1C6: 7F D5         	STA		P_Temp+7
     66 00:C1C8: 53 0F         	LDA		#$0F
-    67 00:C1CA: 71 D6         	AND		P_Temp+6
-    68 00:C1CC: 7F D6         	STA		P_Temp+6
+    67 00:C1CA: 71 D4         	AND		P_Temp+6
+    68 00:C1CC: 7F D4         	STA		P_Temp+6
     69                        L_Loop_DToHx_Prog:
-    70 00:C1CE: 73 D7         	LDA		P_Temp+7
+    70 00:C1CE: 73 D5         	LDA		P_Temp+7
     71 00:C1D0: 13 0E         	BEQ		L_End_DToHx_Prog    ;Z=1跳转
     72 00:C1D2: 00            	SEC
     73 00:C1D3: 55 10         	SBC		#$10
-    74 00:C1D5: 7F D7         	STA		P_Temp+7
+    74 00:C1D5: 7F D5         	STA		P_Temp+7
     75 00:C1D7: 04            	CLC
     76 00:C1D8: 53 0A         	LDA		#$0A
-    77 00:C1DA: 74 D6         	ADC		P_Temp+6
-    78 00:C1DC: 7F D6         	STA		P_Temp+6
+    77 00:C1DA: 74 D4         	ADC		P_Temp+6
+    78 00:C1DC: 7F D4         	STA		P_Temp+6
     79 00:C1DE: 17 EE         	BRA		L_Loop_DToHx_Prog          ;无条件跳转
     80                        L_End_DToHx_Prog:
-    81 00:C1E0: 73 D6         	LDA		P_Temp+6
+    81 00:C1E0: 73 D4         	LDA		P_Temp+6
     82 00:C1E2: 09            	RTS
     83                        ;===========================================
     84                        
@@ -1818,7 +1863,7 @@ Current file: main.asm
     31                        
     32                        
     33                        L_End_Update_Date_Prog:
-    34 00:C1FF: 15 E3 C2      	JSR		L_Auto_Counter_Week
+    34 00:C1FF: 15 09 C3      	JSR		L_Auto_Counter_Week
     35                        L_End_Update_Time_Prog:
     36 00:C202: 09            	RTS
     37                        
@@ -1828,364 +1873,1344 @@ Current file: main.asm
     41                        ;----------------------------------
     42                        L_Update_Time_Sec_Prog:
     43 00:C203: 5E 00         	LDX 	#(R_Time_Sec-Time_Str_Addr)
-    44 00:C205: 16 2E C2      	JMP		L_Inc_To_60_Prog
+    44 00:C205: 16 54 C2      	JMP		L_Inc_To_60_Prog
     45                        L_Update_Time_Min_Prog:;时间分钟更新加
     46 00:C208: 5E 01         	LDX		#(R_Time_Min-Time_Str_Addr)
-    47 00:C20A: 16 2E C2      	JMP		L_Inc_To_60_Prog
+    47 00:C20A: 16 54 C2      	JMP		L_Inc_To_60_Prog
     48                        ;---------------------------
     49                        L_Update_Time_Hr_Prog:;时间小时更新加
     50 00:C20D: 5E 02         	LDX		#(R_Time_Hr-Time_Str_Addr)
     51 00:C20F: 53 23         	LDA		#23H
-    52 00:C211: 16 30 C2      	JMP		L_Inc_To_Any_Count_Prog
+    52 00:C211: 16 56 C2      	JMP		L_Inc_To_Any_Count_Prog
     53                        ;----------------------------------
     54                        L_Update_Time_Day_Prog:;时间天数更新加
-    55 00:C214: 15 92 C2      	JSR		L_Check_MaxDay_Prog
+    55 00:C214: 15 B8 C2      	JSR		L_Check_MaxDay_Prog
     56 00:C217: 5E 03         	LDX		#(R_Time_Day-Time_Str_Addr)
-    57 00:C219: 16 4D C2      	JMP		L_Inc_To_Any_Count_Prog_To_1
+    57 00:C219: 16 73 C2      	JMP		L_Inc_To_Any_Count_Prog_To_1
     58                        ;-------------------------------------
     59                        L_Update_Time_Month_Prog:;时间月更新加
     60 00:C21C: 5E 04         	LDX		#(R_Time_Month-Time_Str_Addr)
     61 00:C21E: 53 12         	LDA		#12H
-    62 00:C220: 16 4D C2      	JMP		L_Inc_To_Any_Count_Prog_To_1
+    62 00:C220: 16 73 C2      	JMP		L_Inc_To_Any_Count_Prog_To_1
     63                        
     64                        ;----------------------------------
     65                        L_Update_Time_Year_Prog:;时间年更新加
     66 00:C223: 5E 05         	LDX		#(R_Time_Year-Time_Str_Addr)
     67 00:C225: 53 99         	LDA		#99H
-    68 00:C227: 15 30 C2      	JSR		L_Inc_To_Any_Count_Prog
-    69 00:C22A: 15 A7 C2      	JSR		L_Judge_MaxDay_Prog
+    68 00:C227: 15 56 C2      	JSR		L_Inc_To_Any_Count_Prog
+    69 00:C22A: 15 CD C2      	JSR		L_Judge_MaxDay_Prog
     70 00:C22D: 09            	RTS
-    71                        ;================================
-    72                        L_Inc_To_60_Prog:;将数从0加到59
-    73 00:C22E: 53 59         	LDA		#59H
-    74                        L_Inc_To_Any_Count_Prog:
-    75 00:C230: 02            	SED
-    76 00:C231: 00            	SEC
-    77 00:C232: 65 28 18      	SBC		Time_Addr,X
-    78 00:C235: 13 0E         	BEQ		L_Inc_Over_Prog
-    79 00:C237: 10 0C         	BCC		L_Inc_Over_Prog
-    80 00:C239: 04            	CLC
-    81 00:C23A: 63 28 18      	LDA		Time_Addr,X
-    82 00:C23D: 54 01         	ADC		#1
-    83 00:C23F: 6F 28 18      	STA		Time_Addr,X
-    84 00:C242: 04            	CLC
-    85 00:C243: 06            	CLD
-    86 00:C244: 09            	RTS
-    87                        L_Inc_Over_Prog:
-    88 00:C245: 53 00         	LDA		#0
-    89 00:C247: 6F 28 18      	STA		Time_Addr,X
-    90 00:C24A: 06            	CLD
-    91 00:C24B: 00            	SEC
-    92                        L_End_Inc_To_60_Prog:
-    93 00:C24C: 09            	RTS
-    94                        
-    95                        L_Inc_To_Any_Count_Prog_To_1:;将数从1加到59
-    96 00:C24D: 02            	SED
-    97 00:C24E: 00            	SEC
-    98 00:C24F: 65 28 18      	SBC		Time_Addr,X
-    99 00:C252: 13 0D         	BEQ		L_Inc_Over_Prog_To_1
-   100 00:C254: 10 0B         	BCC		L_Inc_Over_Prog_To_1
-   101 00:C256: 04            	CLC
-   102 00:C257: 63 28 18      	LDA		Time_Addr,X
-   103 00:C25A: 54 01         	ADC		#1
-   104 00:C25C: 6F 28 18      	STA		Time_Addr,X
-   105 00:C25F: 06            	CLD
-   106 00:C260: 09            	RTS
-   107                        L_Inc_Over_Prog_To_1:
-   108 00:C261: 53 01         	LDA		#1
-   109 00:C263: 6F 28 18      	STA		Time_Addr,X
-   110 00:C266: 06            	CLD
-   111 00:C267: 09            	RTS
-   112                        ;=======================================================
-   113                        L_Dec_To_60_Prog:
-   114 00:C268: 53 59         	LDA		#59H
-   115                        L_Dec_To_0_Prog:
-   116 00:C26A: 7F D0         	STA		P_Temp
-   117 00:C26C: 53 00         	LDA		#0
-   118                        L_Dec_To_Anycount_Prog:
-   119 00:C26E: 02            	SED
-   120 00:C26F: 00            	SEC
-   121 00:C270: 65 28 18          SBC     Time_Addr,X
-   122 00:C273: 13 0E         	BEQ		L_Dec_Over_Prog
-   123 00:C275: 11 0C         	BCS		L_Dec_Over_Prog
-   124                        
-   125 00:C277: 00            	SEC
-   126 00:C278: 63 28 18      	LDA		Time_Addr,X
-   127 00:C27B: 55 01         	SBC		#1
-   128 00:C27D: 6F 28 18      	STA		Time_Addr,X
-   129 00:C280: 06            	CLD
-   130 00:C281: 00            	SEC
-   131 00:C282: 09            	RTS
-   132                        L_Dec_Over_Prog:
-   133 00:C283: 73 D0         	LDA		P_Temp
-   134 00:C285: 6F 28 18      	STA		Time_Addr,X
-   135 00:C288: 06            	CLD
-   136 00:C289: 04            	CLC
-   137 00:C28A: 09            	RTS
-   138                        L_Dec_To_1_Prog:
-   139 00:C28B: 7F D0             STA     P_Temp
-   140 00:C28D: 02            	SED
-   141 00:C28E: 53 01             LDA     #1
-   142 00:C290: 17 DC             BRA     L_Dec_To_Anycount_Prog
-   143                        ;===============================================
-   144                        ;=====================================
-   145                        ;-------------------------------------
-   146                        ;=====================================
-   147                        L_Check_MaxDay_Prog:;检查每月的最大天数
-   148 00:C292: 73 AC         	LDA		R_Time_Month
-   149 00:C294: 15 C2 C1      	JSR		L_DToHx_Prog
-   150 00:C297: 07            	DEC
-   151 00:C298: 1B            	TAX
-   152                        L_Check_MaxDay_Prog_Alarm_clock_Prog:
-   153 00:C299: 73 A0         	LDA		Sys_Flag_B
-   154 00:C29B: 51 08         	AND		#08H
-   155 00:C29D: 12 04         	BNE		L_Check_LeapYear_MaxDay_Prog
-   156 00:C29F: 63 41 C3      	LDA		T_NoLeapYear_Month,X
-   157 00:C2A2: 09            	RTS
-   158                        L_Check_LeapYear_MaxDay_Prog:
-   159 00:C2A3: 63 35 C3      	LDA		T_LeapYear_Month,X
-   160 00:C2A6: 09            	RTS
-   161                        ;==============================
-   162                        ;------------------------------
-   163                        ;==============================
-   164                        L_Judge_MaxDay_Prog:;如果最大天数最大超界限，则给予月份的最大天数
-   165 00:C2A7: 15 92 C2      	JSR		L_Check_MaxDay_Prog
-   166 00:C2AA: 7F D5         	STA		P_Temp+5
-   167 00:C2AC: 76 AB         	CMP		R_Time_Day
-   168 00:C2AE: 11 04         	BCS		L_Judge_MaxDay_Prog_RTS
-   169 00:C2B0: 73 D5         	LDA		P_Temp+5
-   170 00:C2B2: 7F AB         	STA		R_Time_Day
-   171                        L_Judge_MaxDay_Prog_RTS:
-   172 00:C2B4: 09            	RTS
-   173                        ;==================================
-   174                        L_Check_LeapYear_Prog:;检查是否是闰年
-   175 00:C2B5: 73 AD         	LDA		R_Time_Year
-   176 00:C2B7: 15 C2 C1      	JSR		L_DToHx_Prog
-   177 00:C2BA: 7F D0         	STA		P_Temp
-   178 00:C2BC: 04            	CLC
-   179 00:C2BD: 7B D0         	ROR		P_Temp
-   180 00:C2BF: 7E D0         	LDX		P_Temp
-   181 00:C2C1: 63 4D C3      	LDA		T_LeapYear_Week,X
-   182 00:C2C4: 7F D0         	STA		P_Temp
-   183 00:C2C6: 73 AD         	LDA		R_Time_Year
-   184 00:C2C8: 51 01         	AND		#01H
-   185 00:C2CA: 13 0C         	BEQ		L_Counter_LeapYear;建表从2000年开始处于低四位，高四位，需要右移四位
-   186 00:C2CC: 04            	CLC
-   187 00:C2CD: 7B D0         	ROR		P_Temp
-   188 00:C2CF: 04            	CLC
-   189 00:C2D0: 7B D0         	ROR		P_Temp
-   190 00:C2D2: 04            	CLC
-   191 00:C2D3: 7B D0         	ROR		P_Temp
-   192 00:C2D5: 04            	CLC
-   193 00:C2D6: 7B D0         	ROR		P_Temp
-   194                        L_Counter_LeapYear:
-   195 00:C2D8: 23 A0         	RMB3	Sys_Flag_B
-   196 00:C2DA: 53 08         	LDA		#08H
-   197 00:C2DC: 71 D0         	AND		P_Temp
-   198 00:C2DE: 70 A0         	ORA		Sys_Flag_B
-   199 00:C2E0: 7F A0         	STA		Sys_Flag_B;第四位为1则为闰年，否则·为平年
-   200 00:C2E2: 09            	RTS
-   201                        ;===========================================
-   202                        ;P_Temp,0-3bit存储对应年分的1月1日星期几，4bit存储平闰年
-   203                        ;P_Temp+1存储前几个月的天数除以7的余数
-   204                        L_Auto_Counter_Week:
-   205 00:C2E3: 15 B5 C2      	JSR		L_Check_LeapYear_Prog
-   206 00:C2E6: 15 A7 C2      	JSR		L_Judge_MaxDay_Prog
-   207 00:C2E9: 73 AC         	LDA		R_Time_Month
-   208 00:C2EB: 15 C2 C1      	JSR		L_DToHx_Prog
-   209 00:C2EE: 1B            	TAX
-   210 00:C2EF: 63 7F C3      	LDA		T_Month_Week,X
-   211 00:C2F2: 7F D1         	STA		P_Temp+1
-   212 00:C2F4: 73 A0         	LDA		Sys_Flag_B
-   213 00:C2F6: 51 08         	AND		#08H
-   214 00:C2F8: 13 0C         	BEQ		L_Counter_Week_2;非闰年跳转，非闰年需要将右移四位
-   215 00:C2FA: 04            	CLC
-   216 00:C2FB: 7B D1         	ROR		P_Temp+1
-   217 00:C2FD: 04            	CLC
-   218 00:C2FE: 7B D1         	ROR		P_Temp+1
-   219 00:C300: 04            	CLC
-   220 00:C301: 7B D1         	ROR		P_Temp+1
-   221 00:C303: 04            	CLC
-   222 00:C304: 7B D1         	ROR		P_Temp+1
-   223                        L_Counter_Week_2:;十六进制运算
-   224 00:C306: 53 0F         	LDA		#$0F
-   225 00:C308: 71 D1         	AND		P_Temp+1;保留低四位多余的天数
-   226 00:C30A: 7F D1         	STA		P_Temp+1
-   227 00:C30C: 53 07         	LDA		#7
-   228 00:C30E: 71 D0         	AND		P_Temp;保留低三位位每年一月一号星期几
-   229 00:C310: 02            	SED
-   230 00:C311: 04            	CLC
-   231 00:C312: 74 D1         	ADC		P_Temp+1;每年一月一日星期几加上日期再加上多余的天数
-   232 00:C314: 74 AB         	ADC		R_Time_Day
-   233 00:C316: 7F D0         	STA		P_Temp
-   234                        L_Loop_WeekSub_7:
-   235 00:C318: 00            	SEC
-   236 00:C319: 73 D0         	LDA		P_Temp
-   237 00:C31B: 55 07         	SBC		#7
-   238 00:C31D: 10 04         	BCC		L_End_Counter_Week
-   239 00:C31F: 7F D0         	STA		P_Temp
-   240 00:C321: 17 F5         	BRA		L_Loop_WeekSub_7
-   241                        L_End_Counter_Week:
-   242 00:C323: 73 D0         	LDA		P_Temp
-   243 00:C325: 13 04         	BEQ		L_SetWeek_Sat
-   244 00:C327: 79 D0         	DEC		P_Temp
-   245 00:C329: 17 04         	BRA		L_Exit_Counter_Week
-   246                        L_SetWeek_Sat:
-   247 00:C32B: 53 06         	LDA		#6
-   248 00:C32D: 7F D0         	STA		P_Temp
-   249                        L_Exit_Counter_Week:
-   250 00:C32F: 73 D0         	LDA		P_Temp
-   251 00:C331: 7F AE         	STA		R_Time_Week
-   252 00:C333: 06            	CLD
-   253 00:C334: 09            	RTS
-   254                        ;===============================================
-   255                        ;-------------------------------------------
-   256                        T_LeapYear_Month:
-   257 00:C335: 31            	DB		31H
-   258 00:C336: 29            	DB		29H
-   259 00:C337: 31            	DB		31H
-   260 00:C338: 30            	DB		30H
-   261 00:C339: 31            	DB		31H
-   262 00:C33A: 30            	DB		30H
-   263 00:C33B: 31            	DB		31H
-   264 00:C33C: 31            	DB		31H
-   265 00:C33D: 30            	DB		30H
-   266 00:C33E: 31            	DB		31H
-   267 00:C33F: 30            	DB		30H
-   268 00:C340: 31            	DB		31H
-   269                        T_NoLeapYear_Month:
-   270 00:C341: 31            	DB		31H
-   271 00:C342: 28            	DB		28H
-   272 00:C343: 31            	DB		31H
-   273 00:C344: 30            	DB		30H
-   274 00:C345: 31            	DB		31H
-   275 00:C346: 30            	DB		30H
-   276 00:C347: 31            	DB		31H
-   277 00:C348: 31            	DB		31H
-   278 00:C349: 30            	DB		30H
-   279 00:C34A: 31            	DB		31H
-   280 00:C34B: 30            	DB		30H
-   281 00:C34C: 31            	DB		31H
-   282                        T_LeapYear_Week:
-   283 00:C34D: 1E            	DB		1EH   ;2001,2000 ;E="1110"代表2000年1月1日是星期六(110),是闰年(1),
-   284 00:C34E: 32            	DB		32H   ;2003,2002	;000星期天
-   285 00:C34F: 6C            	DB		6CH   ;2005,2004	;001星期一
-   286 00:C350: 10            	DB		10H   ;2007,2006	;010星期二
-   287 00:C351: 4A            	DB		4AH   ;2009,2008	;011星期三
-   288 00:C352: 65            	DB		65H   ;2011,2010	;100星期四
-   289 00:C353: 28            	DB		28H   ;2013,2012	;101星期五
-   290 00:C354: 43            	DB		43H   ;2015,2014	;110星期六
-   291 00:C355: 0D            	DB		0DH   ;2017,2016
-   292 00:C356: 21            	DB		21H   ;2019,2018
-   293 00:C357: 5B            	DB		5BH   ;2021,2020
-   294 00:C358: 06            	DB		06H   ;2023,2022
-   295 00:C359: 39            	DB		39H   ;2025,2024
-   296 00:C35A: 54            	DB		54H   ;2027,2026
-   297 00:C35B: 1E            	DB		1EH   ;2029,2028
-   298 00:C35C: 32            	DB		32H   ;2031,2030
-   299 00:C35D: 6C            	DB		6CH   ;2033,2032
-   300 00:C35E: 10            	DB		10H   ;2035,2034
-   301 00:C35F: 4A            	DB		4AH   ;2037,2036
-   302 00:C360: 65            	DB		65H   ;2039,2038
-   303 00:C361: 28            	DB		28H   ;2041,2040
-   304 00:C362: 43            	DB		43H   ;2043,2042
-   305 00:C363: 0D            	DB		0DH   ;2045,2044
-   306 00:C364: 21            	DB		21H   ;2047,2046
-   307 00:C365: 5B            	DB		5BH   ;2049,2048
-   308 00:C366: 06            	DB		06H   ;2051,2050
-   309 00:C367: 39            	DB		39H   ;2053,2052
-   310 00:C368: 54            	DB		54H   ;2055,2054
-   311 00:C369: 1E            	DB		1EH   ;2057,2056
-   312 00:C36A: 32            	DB		32H   ;2059,2058
-   313 00:C36B: 6C            	DB		6CH   ;2061,2060
-   314 00:C36C: 10            	DB		10H   ;2063,2062
-   315 00:C36D: 4A            	DB		4AH   ;2065,2064
-   316 00:C36E: 65            	DB		65H   ;2067,2066
-   317 00:C36F: 28            	DB		28H   ;2069,2068
-   318 00:C370: 43            	DB		43H   ;2071,2070
-   319 00:C371: 0D            	DB		0DH   ;2073,2072
-   320 00:C372: 21            	DB		21H   ;2075,2074
-   321 00:C373: 5B            	DB		5BH   ;2077,2076
-   322 00:C374: 06            	DB		06H   ;2079,2078
-   323 00:C375: 39            	DB		39H   ;2081,2080
-   324 00:C376: 54            	DB		54H   ;2083,2082
-   325 00:C377: 1E            	DB		1EH   ;2085,2084
-   326 00:C378: 32            	DB		32H   ;2087,2086
-   327 00:C379: 6C            	DB		6CH   ;2089,2088
-   328 00:C37A: 10            	DB		10H   ;2091,2090
-   329 00:C37B: 4A            	DB		4AH   ;2093,2092
-   330 00:C37C: 65            	DB		65H   ;2095,2094
-   331 00:C37D: 28            	DB		28H   ;2097,2096
-   332 00:C37E: 43            	DB		43H   ;2099,2098
-   333                        ;--------------------------------
-   334                        T_Month_Week:
-   335 00:C37F: 00            	DB		00H
-   336 00:C380: 00            	DB		00H   ;JANUARY		从1月1日开始，所以1月为0
-   337 00:C381: 33            	DB		33H   ;FABRUARY 	低4Bit为非闰年，高4Bit为闰年,
-   338 00:C382: 43            	DB		43H   ;MARCH		每4bit数字是前几个月全部的天数减去7的倍数的剩余天数
-   339 00:C383: 76            	DB		76H   ;APRIL
-   340 00:C384: 21            	DB		21H   ;MAY
-   341 00:C385: 54            	DB		54H   ;JUNE
-   342 00:C386: 76            	DB		76H   ;JULY
-   343 00:C387: 32            	DB		32H   ;AUGUST
-   344 00:C388: 65            	DB		65H   ;SEPTEMBER
-   345 00:C389: 10            	DB		10H   ;OCTOBER
-   346 00:C38A: 43            	DB		43H   ;NOVEMBER
-   347 00:C38B: 65            	DB		65H   ;DECEMBER
-   347                        
+    71                        ;======================================
+    72                        
+    73                        L_Update_Time_Min_Prog_DEC:;时间分钟更新减
+    74 00:C22E: 5E 01         	LDX		#(R_Time_Min-Time_Str_Addr)
+    75 00:C230: 16 8E C2      	JMP		L_Dec_To_60_Prog
+    76                        ;---------------------------
+    77                        L_Update_Time_Hr_Prog_DEC:;时间小时更新加
+    78 00:C233: 5E 02         	LDX		#(R_Time_Hr-Time_Str_Addr)
+    79 00:C235: 53 23         	LDA		#23H
+    80 00:C237: 16 94 C2      	JMP		L_Dec_To_Anycount_Prog
+    81                        ;----------------------------------
+    82                        L_Update_Time_Day_Prog_DEC:;时间天数更新加
+    83 00:C23A: 15 B8 C2      	JSR		L_Check_MaxDay_Prog
+    84 00:C23D: 5E 03         	LDX		#(R_Time_Day-Time_Str_Addr)
+    85 00:C23F: 16 B1 C2      	JMP		L_Dec_To_1_Prog
+    86                        ;-------------------------------------
+    87                        L_Update_Time_Month_Prog_DEC:;时间月更新加
+    88 00:C242: 5E 04         	LDX		#(R_Time_Month-Time_Str_Addr)
+    89 00:C244: 53 12         	LDA		#12H
+    90 00:C246: 16 B1 C2      	JMP		L_Dec_To_1_Prog
+    91                        
+    92                        ;----------------------------------
+    93                        L_Update_Time_Year_Prog_DEC:;时间年更新加
+    94 00:C249: 5E 05         	LDX		#(R_Time_Year-Time_Str_Addr)
+    95 00:C24B: 53 99         	LDA		#99H
+    96 00:C24D: 15 94 C2      	JSR		L_Dec_To_Anycount_Prog
+    97 00:C250: 15 CD C2      	JSR		L_Judge_MaxDay_Prog
+    98 00:C253: 09            	RTS
+    99                        ;================================
+   100                        L_Inc_To_60_Prog:;将数从0加到59
+   101 00:C254: 53 59         	LDA		#59H
+   102                        L_Inc_To_Any_Count_Prog:
+   103 00:C256: 02            	SED
+   104 00:C257: 00            	SEC
+   105 00:C258: 65 29 18      	SBC		Time_Addr,X
+   106 00:C25B: 13 0E         	BEQ		L_Inc_Over_Prog
+   107 00:C25D: 10 0C         	BCC		L_Inc_Over_Prog
+   108 00:C25F: 04            	CLC
+   109 00:C260: 63 29 18      	LDA		Time_Addr,X
+   110 00:C263: 54 01         	ADC		#1
+   111 00:C265: 6F 29 18      	STA		Time_Addr,X
+   112 00:C268: 04            	CLC
+   113 00:C269: 06            	CLD
+   114 00:C26A: 09            	RTS
+   115                        L_Inc_Over_Prog:
+   116 00:C26B: 53 00         	LDA		#0
+   117 00:C26D: 6F 29 18      	STA		Time_Addr,X
+   118 00:C270: 06            	CLD
+   119 00:C271: 00            	SEC
+   120                        L_End_Inc_To_60_Prog:
+   121 00:C272: 09            	RTS
+   122                        
+   123                        L_Inc_To_Any_Count_Prog_To_1:;将数从1加到59
+   124 00:C273: 02            	SED
+   125 00:C274: 00            	SEC
+   126 00:C275: 65 29 18      	SBC		Time_Addr,X
+   127 00:C278: 13 0D         	BEQ		L_Inc_Over_Prog_To_1
+   128 00:C27A: 10 0B         	BCC		L_Inc_Over_Prog_To_1
+   129 00:C27C: 04            	CLC
+   130 00:C27D: 63 29 18      	LDA		Time_Addr,X
+   131 00:C280: 54 01         	ADC		#1
+   132 00:C282: 6F 29 18      	STA		Time_Addr,X
+   133 00:C285: 06            	CLD
+   134 00:C286: 09            	RTS
+   135                        L_Inc_Over_Prog_To_1:
+   136 00:C287: 53 01         	LDA		#1
+   137 00:C289: 6F 29 18      	STA		Time_Addr,X
+   138 00:C28C: 06            	CLD
+   139 00:C28D: 09            	RTS
+   140                        ;=======================================================
+   141                        L_Dec_To_60_Prog:
+   142 00:C28E: 53 59         	LDA		#59H
+   143                        L_Dec_To_0_Prog:
+   144 00:C290: 7F CE         	STA		P_Temp
+   145 00:C292: 53 00         	LDA		#0
+   146                        L_Dec_To_Anycount_Prog:
+   147 00:C294: 02            	SED
+   148 00:C295: 00            	SEC
+   149 00:C296: 65 29 18          SBC     Time_Addr,X
+   150 00:C299: 13 0E         	BEQ		L_Dec_Over_Prog
+   151 00:C29B: 11 0C         	BCS		L_Dec_Over_Prog
+   152                        
+   153 00:C29D: 00            	SEC
+   154 00:C29E: 63 29 18      	LDA		Time_Addr,X
+   155 00:C2A1: 55 01         	SBC		#1
+   156 00:C2A3: 6F 29 18      	STA		Time_Addr,X
+   157 00:C2A6: 06            	CLD
+   158 00:C2A7: 00            	SEC
+   159 00:C2A8: 09            	RTS
+   160                        L_Dec_Over_Prog:
+   161 00:C2A9: 73 CE         	LDA		P_Temp
+   162 00:C2AB: 6F 29 18      	STA		Time_Addr,X
+   163 00:C2AE: 06            	CLD
+   164 00:C2AF: 04            	CLC
+   165 00:C2B0: 09            	RTS
+   166                        L_Dec_To_1_Prog:
+   167 00:C2B1: 7F CE             STA     P_Temp
+   168 00:C2B3: 02            	SED
+   169 00:C2B4: 53 01             LDA     #1
+   170 00:C2B6: 17 DC             BRA     L_Dec_To_Anycount_Prog
+   171                        ;===============================================
+   172                        ;=====================================
+   173                        ;-------------------------------------
+   174                        ;=====================================
+   175                        L_Check_MaxDay_Prog:;检查每月的最大天数
+   176 00:C2B8: 73 AD         	LDA		R_Time_Month
+   177 00:C2BA: 15 C2 C1      	JSR		L_DToHx_Prog
+   178 00:C2BD: 07            	DEC
+   179 00:C2BE: 1B            	TAX
+   180                        L_Check_MaxDay_Prog_Alarm_clock_Prog:
+   181 00:C2BF: 73 A0         	LDA		Sys_Flag_B
+   182 00:C2C1: 51 08         	AND		#08H
+   183 00:C2C3: 12 04         	BNE		L_Check_LeapYear_MaxDay_Prog
+   184 00:C2C5: 63 67 C3      	LDA		T_NoLeapYear_Month,X
+   185 00:C2C8: 09            	RTS
+   186                        L_Check_LeapYear_MaxDay_Prog:
+   187 00:C2C9: 63 5B C3      	LDA		T_LeapYear_Month,X
+   188 00:C2CC: 09            	RTS
+   189                        ;==============================
+   190                        ;------------------------------
+   191                        ;==============================
+   192                        L_Judge_MaxDay_Prog:;如果最大天数最大超界限，则给予月份的最大天数
+   193 00:C2CD: 15 B8 C2      	JSR		L_Check_MaxDay_Prog
+   194 00:C2D0: 7F D3         	STA		P_Temp+5
+   195 00:C2D2: 76 AC         	CMP		R_Time_Day
+   196 00:C2D4: 11 04         	BCS		L_Judge_MaxDay_Prog_RTS
+   197 00:C2D6: 73 D3         	LDA		P_Temp+5
+   198 00:C2D8: 7F AC         	STA		R_Time_Day
+   199                        L_Judge_MaxDay_Prog_RTS:
+   200 00:C2DA: 09            	RTS
+   201                        ;==================================
+   202                        L_Check_LeapYear_Prog:;检查是否是闰年
+   203 00:C2DB: 73 AE         	LDA		R_Time_Year
+   204 00:C2DD: 15 C2 C1      	JSR		L_DToHx_Prog
+   205 00:C2E0: 7F CE         	STA		P_Temp
+   206 00:C2E2: 04            	CLC
+   207 00:C2E3: 7B CE         	ROR		P_Temp
+   208 00:C2E5: 7E CE         	LDX		P_Temp
+   209 00:C2E7: 63 73 C3      	LDA		T_LeapYear_Week,X
+   210 00:C2EA: 7F CE         	STA		P_Temp
+   211 00:C2EC: 73 AE         	LDA		R_Time_Year
+   212 00:C2EE: 51 01         	AND		#01H
+   213 00:C2F0: 13 0C         	BEQ		L_Counter_LeapYear;建表从2000年开始处于低四位，高四位，需要右移四位
+   214 00:C2F2: 04            	CLC
+   215 00:C2F3: 7B CE         	ROR		P_Temp
+   216 00:C2F5: 04            	CLC
+   217 00:C2F6: 7B CE         	ROR		P_Temp
+   218 00:C2F8: 04            	CLC
+   219 00:C2F9: 7B CE         	ROR		P_Temp
+   220 00:C2FB: 04            	CLC
+   221 00:C2FC: 7B CE         	ROR		P_Temp
+   222                        L_Counter_LeapYear:
+   223 00:C2FE: 23 A0         	RMB3	Sys_Flag_B
+   224 00:C300: 53 08         	LDA		#08H
+   225 00:C302: 71 CE         	AND		P_Temp
+   226 00:C304: 70 A0         	ORA		Sys_Flag_B
+   227 00:C306: 7F A0         	STA		Sys_Flag_B;第四位为1则为闰年，否则·为平年
+   228 00:C308: 09            	RTS
+   229                        ;===========================================
+   230                        ;P_Temp,0-3bit存储对应年分的1月1日星期几，4bit存储平闰年
+   231                        ;P_Temp+1存储前几个月的天数除以7的余数
+   232                        L_Auto_Counter_Week:
+   233 00:C309: 15 DB C2      	JSR		L_Check_LeapYear_Prog
+   234 00:C30C: 15 CD C2      	JSR		L_Judge_MaxDay_Prog
+   235 00:C30F: 73 AD         	LDA		R_Time_Month
+   236 00:C311: 15 C2 C1      	JSR		L_DToHx_Prog
+   237 00:C314: 1B            	TAX
+   238 00:C315: 63 A5 C3      	LDA		T_Month_Week,X
+   239 00:C318: 7F CF         	STA		P_Temp+1
+   240 00:C31A: 73 A0         	LDA		Sys_Flag_B
+   241 00:C31C: 51 08         	AND		#08H
+   242 00:C31E: 13 0C         	BEQ		L_Counter_Week_2;非闰年跳转，非闰年需要将右移四位
+   243 00:C320: 04            	CLC
+   244 00:C321: 7B CF         	ROR		P_Temp+1
+   245 00:C323: 04            	CLC
+   246 00:C324: 7B CF         	ROR		P_Temp+1
+   247 00:C326: 04            	CLC
+   248 00:C327: 7B CF         	ROR		P_Temp+1
+   249 00:C329: 04            	CLC
+   250 00:C32A: 7B CF         	ROR		P_Temp+1
+   251                        L_Counter_Week_2:;十六进制运算
+   252 00:C32C: 53 0F         	LDA		#$0F
+   253 00:C32E: 71 CF         	AND		P_Temp+1;保留低四位多余的天数
+   254 00:C330: 7F CF         	STA		P_Temp+1
+   255 00:C332: 53 07         	LDA		#7
+   256 00:C334: 71 CE         	AND		P_Temp;保留低三位位每年一月一号星期几
+   257 00:C336: 02            	SED
+   258 00:C337: 04            	CLC
+   259 00:C338: 74 CF         	ADC		P_Temp+1;每年一月一日星期几加上日期再加上多余的天数
+   260 00:C33A: 74 AC         	ADC		R_Time_Day
+   261 00:C33C: 7F CE         	STA		P_Temp
+   262                        L_Loop_WeekSub_7:
+   263 00:C33E: 00            	SEC
+   264 00:C33F: 73 CE         	LDA		P_Temp
+   265 00:C341: 55 07         	SBC		#7
+   266 00:C343: 10 04         	BCC		L_End_Counter_Week
+   267 00:C345: 7F CE         	STA		P_Temp
+   268 00:C347: 17 F5         	BRA		L_Loop_WeekSub_7
+   269                        L_End_Counter_Week:
+   270 00:C349: 73 CE         	LDA		P_Temp
+   271 00:C34B: 13 04         	BEQ		L_SetWeek_Sat
+   272 00:C34D: 79 CE         	DEC		P_Temp
+   273 00:C34F: 17 04         	BRA		L_Exit_Counter_Week
+   274                        L_SetWeek_Sat:
+   275 00:C351: 53 06         	LDA		#6
+   276 00:C353: 7F CE         	STA		P_Temp
+   277                        L_Exit_Counter_Week:
+   278 00:C355: 73 CE         	LDA		P_Temp
+   279 00:C357: 7F AF         	STA		R_Time_Week
+   280 00:C359: 06            	CLD
+   281 00:C35A: 09            	RTS
+   282                        ;===============================================
+   283                        ;-------------------------------------------
+   284                        T_LeapYear_Month:
+   285 00:C35B: 31            	DB		31H
+   286 00:C35C: 29            	DB		29H
+   287 00:C35D: 31            	DB		31H
+   288 00:C35E: 30            	DB		30H
+   289 00:C35F: 31            	DB		31H
+   290 00:C360: 30            	DB		30H
+   291 00:C361: 31            	DB		31H
+   292 00:C362: 31            	DB		31H
+   293 00:C363: 30            	DB		30H
+   294 00:C364: 31            	DB		31H
+   295 00:C365: 30            	DB		30H
+   296 00:C366: 31            	DB		31H
+   297                        T_NoLeapYear_Month:
+   298 00:C367: 31            	DB		31H
+   299 00:C368: 28            	DB		28H
+   300 00:C369: 31            	DB		31H
+   301 00:C36A: 30            	DB		30H
+   302 00:C36B: 31            	DB		31H
+   303 00:C36C: 30            	DB		30H
+   304 00:C36D: 31            	DB		31H
+   305 00:C36E: 31            	DB		31H
+   306 00:C36F: 30            	DB		30H
+   307 00:C370: 31            	DB		31H
+   308 00:C371: 30            	DB		30H
+   309 00:C372: 31            	DB		31H
+   310                        T_LeapYear_Week:
+   311 00:C373: 1E            	DB		1EH   ;2001,2000 ;E="1110"代表2000年1月1日是星期六(110),是闰年(1),
+   312 00:C374: 32            	DB		32H   ;2003,2002	;000星期天
+   313 00:C375: 6C            	DB		6CH   ;2005,2004	;001星期一
+   314 00:C376: 10            	DB		10H   ;2007,2006	;010星期二
+   315 00:C377: 4A            	DB		4AH   ;2009,2008	;011星期三
+   316 00:C378: 65            	DB		65H   ;2011,2010	;100星期四
+   317 00:C379: 28            	DB		28H   ;2013,2012	;101星期五
+   318 00:C37A: 43            	DB		43H   ;2015,2014	;110星期六
+   319 00:C37B: 0D            	DB		0DH   ;2017,2016
+   320 00:C37C: 21            	DB		21H   ;2019,2018
+   321 00:C37D: 5B            	DB		5BH   ;2021,2020
+   322 00:C37E: 06            	DB		06H   ;2023,2022
+   323 00:C37F: 39            	DB		39H   ;2025,2024
+   324 00:C380: 54            	DB		54H   ;2027,2026
+   325 00:C381: 1E            	DB		1EH   ;2029,2028
+   326 00:C382: 32            	DB		32H   ;2031,2030
+   327 00:C383: 6C            	DB		6CH   ;2033,2032
+   328 00:C384: 10            	DB		10H   ;2035,2034
+   329 00:C385: 4A            	DB		4AH   ;2037,2036
+   330 00:C386: 65            	DB		65H   ;2039,2038
+   331 00:C387: 28            	DB		28H   ;2041,2040
+   332 00:C388: 43            	DB		43H   ;2043,2042
+   333 00:C389: 0D            	DB		0DH   ;2045,2044
+   334 00:C38A: 21            	DB		21H   ;2047,2046
+   335 00:C38B: 5B            	DB		5BH   ;2049,2048
+   336 00:C38C: 06            	DB		06H   ;2051,2050
+   337 00:C38D: 39            	DB		39H   ;2053,2052
+   338 00:C38E: 54            	DB		54H   ;2055,2054
+   339 00:C38F: 1E            	DB		1EH   ;2057,2056
+   340 00:C390: 32            	DB		32H   ;2059,2058
+   341 00:C391: 6C            	DB		6CH   ;2061,2060
+   342 00:C392: 10            	DB		10H   ;2063,2062
+   343 00:C393: 4A            	DB		4AH   ;2065,2064
+   344 00:C394: 65            	DB		65H   ;2067,2066
+   345 00:C395: 28            	DB		28H   ;2069,2068
+   346 00:C396: 43            	DB		43H   ;2071,2070
+   347 00:C397: 0D            	DB		0DH   ;2073,2072
+   348 00:C398: 21            	DB		21H   ;2075,2074
+   349 00:C399: 5B            	DB		5BH   ;2077,2076
+   350 00:C39A: 06            	DB		06H   ;2079,2078
+   351 00:C39B: 39            	DB		39H   ;2081,2080
+   352 00:C39C: 54            	DB		54H   ;2083,2082
+   353 00:C39D: 1E            	DB		1EH   ;2085,2084
+   354 00:C39E: 32            	DB		32H   ;2087,2086
+   355 00:C39F: 6C            	DB		6CH   ;2089,2088
+   356 00:C3A0: 10            	DB		10H   ;2091,2090
+   357 00:C3A1: 4A            	DB		4AH   ;2093,2092
+   358 00:C3A2: 65            	DB		65H   ;2095,2094
+   359 00:C3A3: 28            	DB		28H   ;2097,2096
+   360 00:C3A4: 43            	DB		43H   ;2099,2098
+   361                        ;--------------------------------
+   362                        T_Month_Week:
+   363 00:C3A5: 00            	DB		00H
+   364 00:C3A6: 00            	DB		00H   ;JANUARY		从1月1日开始，所以1月为0
+   365 00:C3A7: 33            	DB		33H   ;FABRUARY 	低4Bit为非闰年，高4Bit为闰年,
+   366 00:C3A8: 43            	DB		43H   ;MARCH		每4bit数字是前几个月全部的天数减去7的倍数的剩余天数
+   367 00:C3A9: 76            	DB		76H   ;APRIL
+   368 00:C3AA: 21            	DB		21H   ;MAY
+   369 00:C3AB: 54            	DB		54H   ;JUNE
+   370 00:C3AC: 76            	DB		76H   ;JULY
+   371 00:C3AD: 32            	DB		32H   ;AUGUST
+   372 00:C3AE: 65            	DB		65H   ;SEPTEMBER
+   373 00:C3AF: 10            	DB		10H   ;OCTOBER
+   374 00:C3B0: 43            	DB		43H   ;NOVEMBER
+   375 00:C3B1: 65            	DB		65H   ;DECEMBER
+   375                        
    191                        ; .INCLUDE	Half_s\Alarm_Clock.asm
    192                        ; .INCLUDE	Half_s\Common.asm
    193                        ; .INCLUDE	Half_s\Flash.asm
    194                        ;
    195                        ; .INCLUDE	Sound\Beep.asm
    196                        
-   197                        .INCLUDE	Delay.asm
+   197                        
+   198                        .INCLUDE	RFC\RFC.asm
+     1                        ;========================================================================================
+     2                        ;				RFC 50P016_Program
+     3                        ;========================================================================================
+     4                        ;1、Set PD as input tri-state
+     5                        ;2、Disable TMR0 and TMR1 interrupt
+     6                        ;3、Set TRM0S0 to '1' to select TMR0 clock source as Frcx
+     7                        ;4、Clear TMR1S[1:0]='00' to select TMR1 clock source as TMR0 output
+     8                        ;5、Set TMR_SYNC to '1'
+     9                        ;6、Write 00h to both TMR0 and TMR1
+    10                        ;7、Select a desired RC combination for measurement by setting RFC[1:0], CRT0S and RT01S register bits
+    11                        ;8、Set RFCEN0 or RFCEN1 to ‘1’.The external RC combination will start oscillating.
+    12                        ;9、Clear DIVF interrupt flag.
+    13                        ;10、Enable DIV interrupt then wait a DIV interrupt occurs
+    14                        ;11、Clear TMR0F,TMR1F and DIVF interrupt flags.
+    15                        ;12、Set TMR0On and TMR1ON at the same time.TMR0 and TMR1 will not start counting until the next DIV interrupt occurs(1st DIV occurs).
+    16                        ;13、Wait while the nth DIV occurs, clear TMR0ON and TMR0ON at the same time.
+    17                        ;    TMR0 and TMR1 will not stop counting until the (n+1)th DIV occurs.
+    18                        ;14、Read TMR0 and TMR1 data and check TMR1F to get the RC counts of this measurement
+    19                        ;15、Clear RFCEN0 or RFCEN1 to finish the RC oscillation measurement
+    20                        ;16、Repeat step 6 to 15 will get the RC counts of other RC combination
+    21                        ;========================================================================================
+    22                        C_RfcTime		equ		8 ;10 	;n(div)=1KHZ 10mS
+    23                        ;========================================================================================
+    24                        M_RFC0IOEn:	.MACRO
+    25                        		smb0	RFCC0
+    26                        		smb1	RFCC0
+    27                        		smb2	RFCC0
+    28                        		smb3	RFCC0
+    29                        		.ENDM
+    30                        M_RFC1IOEn:	.MACRO
+    31                        		smb3	RFCC0
+    32                        		smb5	RFCC0
+    33                        		smb6	RFCC0
+    34                        		smb7	RFCC0
+    35                        
+    36                        		rmb7	PCSEG
+    37                        
+    38                        		rmb4	PDSEG
+    39                        		rmb5	PDSEG
+    40                        		rmb6	PDSEG
+    41                        		rmb7	PDSEG
+    42                        		.ENDM
+    43                        
+    44                        M_PD0PD3:	.MACRO
+    45                        		rmb0	RFCC0
+    46                        		rmb1	RFCC0
+    47                        		rmb2	RFCC0
+    48                        		rmb3	RFCC0
+    49                        
+    50                        		smb0	PDDIR
+    51                        		smb1	PDDIR
+    52                        		smb2	PDDIR
+    53                        		smb3	PDDIR
+    54                        
+    55                        		smb0	PDD
+    56                        		smb1	PDD
+    57                        		smb2	PDD
+    58                        		smb3	PDD
+    59                        		.ENDM
+    60                        M_PD4PD7:	.MACRO
+    61                        		rmb4	RFCC0
+    62                        		rmb5	RFCC0
+    63                        		rmb6	RFCC0
+    64                        		rmb7	RFCC0
+    65                        
+    66                        		smb4	PDDIR
+    67                        		smb5	PDDIR
+    68                        		smb6	PDDIR
+    69                        		smb7	PDDIR
+    70                        
+    71                        		smb4	PDD
+    72                        		smb5	PDD
+    73                        		smb6	PDD
+    74                        		smb7	PDD
+    75                        		.ENDM
+    76                        ;============================================
+    77                        F_RFCInit:
+    78                        
+    79 00:C3B2: 23 5C         		rmb3	PDSEG
+    80 00:C3B4: 22 5C         		rmb2	PDSEG
+    81 00:C3B6: 21 5C         		rmb1	PDSEG
+    82 00:C3B8: 20 5C         		rmb0	PDSEG
+    83                        
+    84 00:C3BA: 28 5D         		smb0	RFCC0
+    85 00:C3BC: 29 5D         		smb1	RFCC0
+    86 00:C3BE: 2A 5D         		smb2	RFCC0
+    87 00:C3C0: 2B 5D         		smb3	RFCC0
+    88                        		; M_RFC0IOEn
+    89                        		; M_RFC1IOEn
+    90                        		; M_PD0PD3
+    91                        ;		lda	#20
+    92                        ;		ldx	#0
+    93                        ;		jsr	F_GetFrcx
+    94                        ;		lda	<P_TMR0L
+    95                        ;		sta	R_RFC0+0
+    96                        ;		lda	<P_TMR0H
+    97                        ;		sta	R_RFC0+1
+    98                        ;
+    99                        ;		lda	#20
+   100                        ;		ldx	#1
+   101                        ;		jsr	F_GetFrcx
+   102                        ;		lda	<P_TMR0L
+   103                        ;		sta	R_RFC1+0
+   104                        ;		lda	<P_TMR0H
+   105                        ;		sta	R_RFC1+1
+   106 00:C3C2: 09            		rts
+   107                        ;=================================================
+   108                        F_GetFrcMode0:		;input R_RFCCH : wait time, Xcc : Which Port
+   109 00:C3C3: 7F E9         		sta		R_RFCCH			;保存测量时间参数，等待DIV中断次数
+   110                        ;		stx		R_Tmp1
+   111 00:C3C5: 21 0E         		rmb1	P_IER			;clear Tmr0 int，禁用中断
+   112 00:C3C7: 22 0E         		rmb2	P_IER			;clear Tmr1 int，禁用中断
+   113                        
+   114 00:C3C9: 20 0F         		rmb0	P_IFR			;clear div int flag，清除DIV中断标志
+   115                        L_0WaitDiv:
+   116 00:C3CB: 30 0F FD      		bbr0	P_IFR,L_0WaitDiv
+   117                        
+   118 00:C3CE: 20 0F         		rmb0	P_IFR			;clear div int flag
+   119 00:C3D0: 21 0F         		rmb1	P_IFR			;clear tm0 int flag
+   120 00:C3D2: 22 0F         		rmb2	P_IFR			;clear tm1 int flag
+   121                        ;保证计数器在DIV时钟的同步下启动，避免计数偏差
+   122                        
+   123                        
+   124                        ;		rmb0	<P_TMRC			;close tmr0
+   125 00:C3D4: 20 16         		rmb0	<P_TMRC
+   126 00:C3D6: 21 16         		rmb1	<P_TMRC			;close tmr0 and tmr1
+   127                        
+   128                        ;		lda		#0
+   129                        ;		sta		<P_TMR0L		;clr tmr0
+   130                        ;		sta		<P_TMR0H	    ;备注：易码母体必须先写低位，后写高位。
+   131                                                        ;读则反之，必须先读高位，后读低位。
+   132 00:C3D8: 53 00         		lda		#0
+   133 00:C3DA: 7F 10         		sta		P_TMR0
+   134 00:C3DC: 7F 12         		sta		P_TMR1
+   135                        ;重置计数器，为新的测量周期准备
+   136                        
+   137 00:C3DE: 53 03         		lda		#%00000011
+   138 00:C3E0: 7F 17         		sta		P_TMCLK			;set timer0 from T01 ,timer1 from timer0
+   139                        
+   140 00:C3E2: 2E 18         		smb6	P_DIVC			;set sync with tm0 and tm1
+   141 00:C3E4: 2E 16         		smb6	P_TMRC			;T01=T0CK1，TMR1级联到TMR0形成24为计数器
+   142                        ;		rmb6	P_TMRC			;T01 = Fosc/4
+   143                        
+   144 00:C3E6: 63 08 C4      		lda		T_RFCTable,x
+   145 00:C3E9: 7F 5E         		sta		RFCC1			;选择传感器接口
+   146                        ;		JSR	F_Delay100Ms
+   147                        
+   148                        ;		smb0	<P_TMRC			;open tmr0
+   149 00:C3EB: 28 16         		smb0	P_TMRC
+   150 00:C3ED: 29 16         		smb1	P_TMRC			;open tmr0 and tmr1
+   151                        L_0WaitDiv2:
+   152 00:C3EF: 30 0F FD      		bbr0	<P_IFR,L_0WaitDiv2
+   153 00:C3F2: 20 0F         		rmb0	<P_IFR			;clear div int flag
+   154 00:C3F4: 79 E9         		dec		R_RFCCH			;等待测量时间耗尽
+   155 00:C3F6: 12 F7         		bne		L_0WaitDiv2
+   156                        L_0Exit:
+   157                        ;		rmb0	<P_TMRC			;close tmr0
+   158 00:C3F8: 20 16         		rmb0	<P_TMRC
+   159 00:C3FA: 21 16         		rmb1	<P_TMRC		;close tmr0 and tmr1
+   160                        L_0WaitDiv3:
+   161 00:C3FC: 30 0F FD      		bbr0	<P_IFR,L_0WaitDiv3
+   162 00:C3FF: 20 0F         		rmb0	<P_IFR		;clear div int flag
+   163 00:C401: 53 00         		lda		#0
+   164 00:C403: 7F 5E         		sta		RFCC1
+   165                        
+   166 00:C405: 26 16         		rmb6	P_TMRC			;T01 = Fosc/4
+   167 00:C407: 09            		rts
+   168                        
+   169                        T_RFCTable:
+   170                        ;;;;;;2nd
+   171                        	; db	%00111000	; RT01		;0
+   172                        	; db	%00011000	; RS1RT0 	;1
+   173                        	; db	%00101000	; CS1RT01	;2 CS---GND
+   174 00:C408: 28            	db	%00101000	; RH_PD3
+   175 00:C409: 18            	db	%00011000	; RT_PD2
+   176 00:C40A: 68            	db	%01101000	; RR_PD1	;CS---GND
+   177                        
+   178 00:C40B: A8            	db	%10101000	; RT01		;3
+   179 00:C40C: 98            	db	%10011000	; RS1RT0 	;CS---CS1RT01
+   180                        ;=========================================================
+   181                        ;=========================================================
+   182                        F_GetFrcMode1:		;input R_Tmp0 : wait time, Xcc : Which Port(Long Time Mode)
+   183 00:C40D: 7F CE         		sta		R_Tmp0
+   184                        
+   185 00:C40F: 20 5E         		rmb0	RFCC1		;clear rfci
+   186                        
+   187                        ;		rmb0	<P_TMRC		;close tmr0
+   188 00:C411: 20 16         		rmb0	<P_TMRC
+   189 00:C413: 21 16         		rmb1	<P_TMRC			;close tmr0 and tmr1
+   190                        
+   191                        ;		lda	#0
+   192                        ;		sta	<P_TMR0L
+   193                        ;		sta	<P_TMR0H
+   194 00:C415: 53 00         		lda		#0
+   195 00:C417: 7F 10         		sta		<P_TMR0
+   196 00:C419: 7F 12         		sta		<P_TMR1
+   197                        
+   198 00:C41B: 53 03         		lda		#%00000011
+   199 00:C41D: 7F 17         		sta		<P_TMCLK		;set timer0 from T01 ,timer1 from timer0
+   200                        
+   201                        ;		smb7	<P_TMRC			;set sync tm0 with div or frcx
+   202                        ;		rmb6	<P_TMRC			;T01 = F4M/4
+   203 00:C41F: 2E 18         		smb6	<P_DIVC			;set sync with tm0 and tm1
+   204 00:C421: 26 16         		rmb6	<P_TMRC			;T01 = Fosc/4
+   205                        
+   206 00:C423: 63 48 C4      		lda		T_RFCTable2,x
+   207 00:C426: 7F 5E         		sta		RFCC1
+   208                        
+   209 00:C428: 20 5E         		rmb0	RFCC1		;clear rfci int flag
+   210                        L_1WaitDiv:
+   211 00:C42A: 30 5E FD      		bbr0	RFCC1,L_1WaitDiv
+   212                        
+   213 00:C42D: 20 5E         		rmb0	RFCC1		;clear rfci
+   214                        
+   215                        ;		smb0	<P_TMRC		;open tmr0
+   216 00:C42F: 28 16         		smb0	<P_TMRC
+   217 00:C431: 29 16         		smb1	<P_TMRC			;open tmr0 and tmr1
+   218                        L_1WaitDiv2:
+   219 00:C433: 30 5E FD      		bbr0	RFCC1,L_1WaitDiv2
+   220 00:C436: 20 5E         		rmb0	RFCC1			;clear div int flag
+   221 00:C438: 79 CE         		dec		R_Tmp0
+   222 00:C43A: 12 F7         		bne		L_1WaitDiv2
+   223                        L_1Exit:
+   224                        ;		rmb0	<P_TMRC			;close tmr0
+   225 00:C43C: 20 16         		rmb0	<P_TMRC
+   226 00:C43E: 21 16         		rmb1	<P_TMRC		;close tmr0 and tmr1
+   227                        L_1WaitDiv3:
+   228 00:C440: 30 5E FD      		bbr0	RFCC1,L_1WaitDiv3
+   229 00:C443: 53 00         		lda		#0
+   230 00:C445: 7F 5E         		sta		RFCC1
+   231 00:C447: 09            		rts
+   232                        
+   233                        T_RFCTable2:
+   234                        ;;;;;;2nd
+   235 00:C448: 2E            	db	%00101110	; RH_PD3
+   236 00:C449: 1E            	db	%00011110	; RT_PD2
+   237 00:C44A: 6E            	db	%01101110	; RR_PD1	;CS---GND
+   238                        
+   239 00:C44B: AE            	db	%10101110	; RT01
+   240 00:C44C: 9E            	db	%10011110	; RS1RT0 	;CS---CS1RT01
+   241                        ;======================================================
+   242                        ;======================================================
+   243                        F_RfcTest:
+   244                        		DIV_256HZ					;设置分频器为256HZ
++  244 00:C44D: 2D 18          SMB5 DIVC
+   245                        		Fsys_4MHZ					;ET50P016特有
++  245 00:C44F: 24 1D          RMB4 SYSCLK
++  245 00:C451: 25 1D          RMB5 SYSCLK
+   246                        		; Fsys_Fosc_1
+   247                        		Fcpu_Fext					;切换外部时钟
++  247 00:C453: 2F 1D          SMB7 SYSCLK
+   248 00:C455: 1A            		NOP
+   249                        		Fosc_OFF					;关闭主振荡器
++  249 00:C456: 22 1D          RMB2 SYSCLK
+   250 00:C458: 1A            		NOP
+   251 00:C459: 01            		SEI							;关闭全局中断
+   252                        
+   253                        		PD47_RFC
++  253 00:C45A: 27 09          RMB7 PCSEG
++  253                        
++  253                        
++  253                        
++  253                        
++  253 00:C45C: 2C 5D          SMB4 RFCC0
++  253 00:C45E: 2D 5D          SMB5 RFCC0
++  253 00:C460: 2E 5D          SMB6 RFCC0
++  253 00:C462: 2F 5D          SMB7 RFCC0
+   254 00:C464: 5E 02         		ldx		#2	;#1				;选择RFC通道2
+   255 00:C466: 53 08           		lda		#C_RfcTime			;测量周期
+   256 00:C468: 15 C3 C3      		jsr		F_GetFrcMode0
+   257 00:C46B: 73 10         		lda		P_TMR0
+   258 00:C46D: 7F E1         		STA 	R_RR_L
+   259 00:C46F: 73 12         		lda		P_TMR1
+   260 00:C471: 7F E2         		STA 	R_RR_M
+   261 00:C473: 53 00         		LDA 	#$00
+   262 00:C475: 7F E3         		STA 	R_RR_H				;将读取的值储存起来，测量的是参考电阻RR
+   263                        
+   264 00:C477: 5E 01         		ldx		#1	;#2	;
+   265 00:C479: 53 08           		lda		#C_RfcTime
+   266 00:C47B: 15 C3 C3      		jsr		F_GetFrcMode0
+   267 00:C47E: 73 10         		LDA 	P_TMR0
+   268 00:C480: 7F DE         		STA 	R_RT_L
+   269 00:C482: 73 12         		LDA 	P_TMR1
+   270 00:C484: 7F DF         		STA 	R_RT_M
+   271 00:C486: 53 00         		LDA		#$00
+   272 00:C488: 7F E0         		STA 	R_RT_H				;将读取的值储存起来，测量的是温度电阻RT
+   273                        
+   274                        		; ldx		#0	;#2	;
+   275                          		; lda		#C_RfcTime
+   276                        		; jsr		F_GetFrcMode0
+   277                        		; LDA 	P_TMR0
+   278                        		; STA 	R_RH_L
+   279                        		; LDA 	P_TMR1
+   280                        		; STA 	R_RH_M
+   281                        		; LDA		#$00
+   282                        		; STA 	R_RH_H				;将读取的值储存起来，测量的是湿度电阻RH
+   283                        
+   284                        		Fosc_ON
++  284 00:C48A: 2A 1D          SMB2 SYSCLK
+   285 00:C48C: 1A            		NOP
+   286                        		Fsys_2MHZ
++  286 00:C48D: 2C 1D          SMB4 SYSCLK
++  286 00:C48F: 25 1D          RMB5 SYSCLK
+   287                        		Fcpu_Fsys
++  287 00:C491: 27 1D          RMB7 SYSCLK
+   288 00:C493: 1A            		NOP
+   289 00:C494: 05            		CLI
+   290 00:C495: 15 99 C4      		JSR		L_Counter_Temperature_Prog
+   291                        		; JSR		L_Counter_Humidity_Prog
+   292 00:C498: 09            		RTS
+   293                        ;=======================================================
+   294                        ; F_Delay100Ms:
+   295                        ; 		ldx	#$FE	;#E0H
+   296                        ; L_WaitLoop1:
+   297                        ; 		lda	#0
+   298                        ; L_WaitLoop:
+   299                        ; 		clc
+   300                        ; 		adc	#1
+   301                        ; 		bne	L_WaitLoop
+   302                        ; 		inx
+   303                        ; 		bne	L_WaitLoop1
+   304                        ; 		rts
+   305                        ; F_Delay2000Ms:
+   306                        ; 		LDX #0
+   307                        ; L_2WaitLoop1:
+   308                        ; 		lda	#0
+   309                        ; L_2WaitLoop:
+   310                        ; 		clc
+   311                        ; 		adc	#1
+   312                        ; 		bne	L_2WaitLoop
+   313                        ; 		inx
+   314                        ; 		bne	L_2WaitLoop1
+   315                        ; 		rts
+   316                        ;==================================
+   317                        ;F_WaitKey:
+   318                        ;		lda	<P_PA
+   319                        ;		and	#%00100000
+   320                        ;		bne	F_WaitKey
+   321                        ;
+   322                        ;		lda	#10
+   323                        ;		sta	R_KeyCnt
+   324                        ;L_WaitDiv:
+   325                        ;		bbr0	<P_IFR,L_WaitDiv
+   326                        ;		rmb0	<P_IFR			;clear div int flag
+   327                        ;
+   328                        ;		lda	<P_PA
+   329                        ;		and	#%00100000
+   330                        ;		bne	F_WaitKey
+   331                        ;
+   332                        ;		dec	R_KeyCnt
+   333                        ;		bne	L_WaitDiv
+   334                        ;L_WaitKey:
+   335                        ;		lda	<P_PA
+   336                        ;		and	#%00100000
+   337                        ;		beq	L_WaitKey
+   338                        ;
+   339                        ;		lda	#10
+   340                        ;		sta	R_KeyCnt
+   341                        ;L_WaitDiv1:
+   342                        ;		bbr0	<P_IFR,L_WaitDiv1
+   343                        ;		rmb0	<P_IFR			;clear div int flag
+   344                        ;		lda	<P_PA
+   345                        ;		and	#%00100000
+   346                        ;		beq	L_WaitKey
+   347                        ;		dec	R_KeyCnt
+   348                        ;		bne	L_WaitDiv1
+   349                        ;		rts
+   350                        ;===============================================
+   351                        
+   352                        
+   353                        
+   354                        
+   355                        
+   355                        
+   199                        .INCLUDE	RFC\Temp.asm
+     1                        ;------------------------------------------------
+     2                        ; PA1 : CAP= 102
+     3                        ; PA3 : RR	= 39K
+     4                        ; PA4 : RT=  10K
+     5                        ; PA5 : (RH303 // 1M) + 510R
+     6                        ;需要修改的地方：L_Temperature_Low，更改测量最低温度。
+     7                        ;L_Temperature_High：测量最高温度
+     8                        ;L_Counter_T_Step2_1：P_TEMP+6控制测量范围
+     9                        ;
+    10                        ;------------------------------------------------
+    11                        ;------------------------------------------------
+    12                        ;------------------------------------------------
+    13                        ;************************************************
+    14                        ;------------------------------------------------
+    15                        ;L_RR_Fail_Program:
+    16                        ;	lda		R_Temperature_L
+    17                        ;	AND		#0	;#$0F
+    18                        ;	ORA		#$10
+    19                        ;	sta		R_Temperature_L
+    20                        ;	LDA		#$BB
+    21                        ;	STA		R_Temperature
+    22                        ;	STA		R_Temperature_F_H
+    23                        ;   STA     R_Temperature_F_M
+    24                        ;	RTS
+    25                        ;
+    26                        
+    27                        
+    28                        ;------------------------------------------------
+    29                        ;************************************************
+    30                        ;------------------------------------------------
+    31                        L_Counter_Temperature_Prog:;
+    32 00:C499: 73 DF                 LDA     R_RT_M
+    33 00:C49B: 70 E0                 ORA     R_RT_H
+    34 00:C49D: 12 09         		BNE	 	L_OK1
+    35 00:C49F: 73 DE                 LDA     R_RT_L
+    36 00:C4A1: 56 0A         		CMP		#10
+    37 00:C4A3: 11 03         		BCS		L_OK1	;L_RR_Fail_Program，低温判断
+    38 00:C4A5: 16 3A C5      		JMP		L_Temperature_Low
+    39                        L_OK1:
+    40 00:C4A8: 73 E2                 LDA     R_RR_M
+    41 00:C4AA: 70 E3         		ORA     R_RR_H
+    42 00:C4AC: 12 09         		BNE		L_OK2
+    43 00:C4AE: 73 E1                 LDA     R_RR_L
+    44 00:C4B0: 56 0A         		CMP		#10
+    45 00:C4B2: 11 03         		BCS		L_OK2	;L_RR_Fail_Program，判断参考电阻的值
+    46 00:C4B4: 16 3A C5      		JMP		L_Temperature_Low;低温判断
+    47                        L_OK2:
+    48 00:C4B7: 06            		CLD
+    49 00:C4B8: 73 DE                 LDA     R_RT_L
+    50 00:C4BA: 7F D8                 STA     P_Temp+10 ; 0 ; 3
+    51 00:C4BC: 73 DF                 LDA     R_RT_M
+    52 00:C4BE: 7F D9                 STA     P_Temp+11 ; 1 ; 4
+    53 00:C4C0: 53 00                 LDA     #0H
+    54 00:C4C2: 7F DA                 STA     P_Temp+12 ; 2 ; 5
+    55                        
+    56 00:C4C4: 73 E1                 LDA     R_RR_L
+    57 00:C4C6: 7F DB                 STA     P_Temp+13 ; 3 ; 0
+    58 00:C4C8: 73 E2                 LDA     R_RR_M
+    59 00:C4CA: 7F DC                 STA     P_Temp+14 ; 4 ; 1
+    60 00:C4CC: 53 00                 LDA     #0H
+    61 00:C4CE: 7F DD                 STA     P_Temp+15 ; 5 ; 2
+    62                        
+    63 00:C4D0: 15 FC C5              JSR     L_Counter_T_Sbc_Prog    ;调用减法程序计算比值
+    64                        
+    65 00:C4D3: 73 D7                 LDA     P_Temp+9
+    66 00:C4D5: 7F D5                 STA     P_Temp+7
+    67 00:C4D7: 15 E7 C5              JSR     L_R0Data_LeftMove4Bit   ;将温度电阻的值左移四位
+    68 00:C4DA: 15 FC C5              JSR     L_Counter_T_Sbc_Prog    ;再次计算比值
+    69                        
+    70 00:C4DD: 73 D7                 LDA     P_Temp+9
+    71 00:C4DF: 7F D6                 STA     P_Temp+8
+    72 00:C4E1: 04            		CLC
+    73 00:C4E2: 7A D6         		ROL		P_Temp+8
+    74 00:C4E4: 04            		CLC
+    75 00:C4E5: 7A D6         		ROL		P_Temp+8
+    76 00:C4E7: 04            		CLC
+    77 00:C4E8: 7A D6         		ROL		P_Temp+8
+    78 00:C4EA: 04            		CLC
+    79 00:C4EB: 7A D6         		ROL		P_Temp+8
+    80 00:C4ED: 15 E7 C5              JSR     L_R0Data_LeftMove4Bit
+    81 00:C4F0: 15 FC C5              JSR     L_Counter_T_Sbc_Prog
+    82                        
+    83 00:C4F3: 73 D7                 LDA     P_Temp+9
+    84 00:C4F5: 70 D6                 ORA     P_Temp+8
+    85 00:C4F7: 7F D6                 STA     P_Temp+8
+    86 00:C4F9: 15 E7 C5              JSR     L_R0Data_LeftMove4Bit
+    87 00:C4FC: 15 FC C5              JSR     L_Counter_T_Sbc_Prog    ;将分段的计算结果合并，形成连续的二进制温度值
+    88                        
+    89 00:C4FF: 04                    CLC
+    90 00:C500: 53 F8                 LDA     #$F8
+    91 00:C502: 74 D7                 ADC     P_Temp+9
+    92 00:C504: 53 00                 LDA     #0
+    93 00:C506: 74 D6                 ADC     P_Temp+8
+    94 00:C508: 7F D6                 STA     P_Temp+8
+    95 00:C50A: 53 00                 LDA     #0
+    96 00:C50C: 74 D5                 ADC     P_Temp+7
+    97 00:C50E: 7F D5                 STA     P_Temp+7
+    98 00:C510: 53 00                 LDA     #0
+    99 00:C512: 7F D4                 STA     P_Temp+6    ;溢出和校准查表
+   100 00:C514: 5E 00                 LDX     #0
+   101                        
+   102                        ;		SEC					;xwx
+   103                        ;        LDA     P_Temp+7
+   104                        ;        SBC     #1
+   105                        ;        BCC     L_Counter_T_Step2
+   106                        ;		SEC
+   107                        ;        LDA     P_Temp+7
+   108                        ;        SBC     #1
+   109                        ;        STA     P_Temp+7	;xwx	;从0度开始这里多减255
+   110                        
+   111                        L_Loop_Counter_T_Step1:
+   112 00:C516: 00            		SEC
+   113 00:C517: 73 D6                 LDA     P_Temp+8
+   114 00:C519: 65 28 C6              SBC     Table_Temperature,X
+   115 00:C51C: 73 D5                 LDA     P_Temp+7
+   116 00:C51E: 55 00                 SBC     #0
+   117 00:C520: 10 14                 BCC     L_Counter_T_Step2
+   118 00:C522: 00                    SEC
+   119 00:C523: 73 D6                 LDA     P_Temp+8
+   120 00:C525: 65 28 C6              SBC     Table_Temperature,X
+   121 00:C528: 7F D6                 STA     P_Temp+8
+   122 00:C52A: 73 D5                 LDA     P_Temp+7
+   123 00:C52C: 55 00                 SBC     #0
+   124 00:C52E: 7F D5                 STA     P_Temp+7
+   125 00:C530: 0B                    INX
+   126                        ;        SED
+   127                        ;        CLC
+   128                        ;        LDA     #1
+   129                        ;        ADC     P_Temp+6
+   130                        ;        STA     P_Temp+6
+   131                        ;        CLD
+   132 00:C531: 78 D4         		INC		P_Temp+6
+   133                        
+   134 00:C533: 16 16 C5              JMP     L_Loop_Counter_T_Step1
+   135                        
+   136                        L_Counter_T_Step2:
+   137 00:C536: 73 D4             LDA     P_Temp+6
+   138 00:C538: 12 09             BNE     L_Counter_T_Step2_1
+   139                        L_Temperature_Low:              ;等于0是说明现在是最低温，
+   140                                                        ;当小于时跳转到此
+   141                        ;	JMP		L_RR_Fail_Program
+   142 00:C53A: 73 E8         	lda		R_Temperature_L
+   143 00:C53C: 51 00         	AND		#0	;#$0F
+   144 00:C53E: 50 09         	ORA		#$9
+   145 00:C540: 7F E8         	STA		R_Temperature_L
+   146                        
+   147                        ;	ORA		#$89
+   148                        ;	sta		R_Temperature_L
+   149                        ;	LDA		#09
+   150                        ;	STA		R_Temperature
+   151                        ;	JMP		L_TestOkExit
+   152 00:C542: 09            	RTS
+   153                        
+   154                        
+   155                        L_Counter_T_Step2_1:
+   156 00:C543: 00            	SEC
+   157 00:C544: 53 3B             LDA     #59		;-20~70,控制测量范围
+   158 00:C546: 75 D4             SBC     P_Temp+6
+   159 00:C548: 11 09             BCS     L_Counter_T_Step2_2
+   160                        L_Temperature_High:
+   161 00:C54A: 73 E8         	lda		R_Temperature_L
+   162 00:C54C: 51 00         	AND		#0	;#$0F
+   163 00:C54E: 50 50         	ORA		#$50
+   164 00:C550: 7F E8         	sta		R_Temperature_L
+   165                        ;	LDA		#65
+   166                        ;	STA		R_Temperature
+   167                        ;	JMP		L_TestOkExit
+   168 00:C552: 09            	RTS
+   169                        
+   170                        L_Counter_T_Step2_2:
+   171 00:C553: 15 AD C5          JSR     L_Counter_T_Decimals;P_Temp+5是十分位的温度
+   172 00:C556: 00                SEC
+   173 00:C557: 73 D4             LDA     P_Temp+6
+   174 00:C559: 55 0A             SBC     #41-31		;#52
+   175 00:C55B: 11 3C             BCS     L_Temperature_Over_0
+   176 00:C55D: 53 0A         	LDA		#41-31
+   177 00:C55F: 7F CE         	STA		P_Temp
+   178 00:C561: 73 D3             LDA     P_Temp+5
+   179 00:C563: 13 04         	BEQ     L_Measure_Small0_Temp_L
+   180 00:C565: 53 09         	LDA     #40-31
+   181 00:C567: 7F CE         	STA     P_Temp
+   182                        L_Measure_Small0_Temp_L:
+   183 00:C569: 00            	SEC
+   184 00:C56A: 73 CE             LDA     P_Temp
+   185 00:C56C: 75 D4             SBC     P_Temp+6
+   186 00:C56E: 7F E7             STA     R_Temperature
+   187                        
+   188 00:C570: 73 D3         	LDA		P_Temp+5
+   189 00:C572: 13 06         	BEQ		NoInc
+   190 00:C574: 56 03         	CMP		#10-7
+   191 00:C576: 11 02         	BCS		NoInc
+   192 00:C578: 78 E7         	INC		R_Temperature
+   193                        NoInc:
+   194                        
+   195 00:C57A: 73 E7         	LDA		R_Temperature
+   196 00:C57C: 12 07         	BNE		Continue
+   197                        ;    LDA     P_Temp+5
+   198                        ;	BNE		Continue
+   199 00:C57E: 53 00         	LDA		#0
+   200 00:C580: 7F E8         	STA		R_Temperature_L
+   201 00:C582: 16 9F C5      	JMP		L_Test_Ok
+   202                        Continue:
+   203 00:C585: 73 E8         	LDA		R_Temperature_L	;P_Temp+5	;
+   204 00:C587: 51 00         	AND		#$00
+   205 00:C589: 50 80         	ORA		#$80
+   206 00:C58B: 7F E8         	STA		R_Temperature_L ;温度负值标志
+   207 00:C58D: 73 E7         	LDA		R_Temperature
+   208 00:C58F: 56 0A         	CMP		#9+1	;#21
+   209 00:C591: 10 03         	BCC		L_End_CounteP_Temp_Small_0
+   210 00:C593: 16 3A C5      	JMP		L_Temperature_Low
+   211                        L_End_CounteP_Temp_Small_0:
+   212 00:C596: 16 9F C5      	JMP		L_Test_Ok
+   213                        ;========================================
+   214                        L_Temperature_Over_0:
+   215 00:C599: 7F E7         	STA		R_Temperature
+   216                        
+   217 00:C59B: 53 00         	LDA		#0
+   218 00:C59D: 7F E8         	STA		R_Temperature_L
+   219                        
+   220                        ; 	LDA		P_Temp+5
+   221                        ; 	AND		#$0F
+   222                        ; 	CMP		#$07
+   223                        ; 	BCC		Skip
+   224                        ; ;	STA		R_Temperature_L
+   225                        ; 	INC		R_Temperature
+   226                        Skip:
+   227                        
+   228                        
+   229                        L_ExitDisDeal:
+   230                        L_Test_Ok:
+   231 00:C59F: 73 E7         	LDA		R_Temperature
+   232 00:C5A1: 56 33         	CMP		#50+1 ;#70+1
+   233 00:C5A3: 11 A5         	BCS		L_Temperature_High
+   234                        L_TestOkExit:
+   235 00:C5A5: 73 E7         	LDA		R_Temperature
+   236 00:C5A7: 15 9C C1      	JSR		L_A_HexToHexD
+   237 00:C5AA: 7F E7         	STA		R_Temperature			;*小于100的十六进制转十进制
+   238 00:C5AC: 09            	RTS
+   239                        ;------------------------------------------------
+   240                        L_Counter_T_Decimals:
+   241 00:C5AD: 53 0A                 LDA     #$A
+   242 00:C5AF: 7F CE                 STA     P_Temp
+   243 00:C5B1: 53 00                 LDA     #0
+   244 00:C5B3: 7F CF                 STA     P_Temp+1
+   245 00:C5B5: 7F D0                 STA     P_Temp+2
+   246                        L_Loop_Mul10:           ;将剩下的比值乘以10
+   247 00:C5B7: 73 CE                 LDA     P_Temp
+   248 00:C5B9: 13 12                 BEQ     L_Counter_T_Decimals_1
+   249 00:C5BB: 04                    CLC
+   250 00:C5BC: 73 D6                 LDA     P_Temp+8
+   251 00:C5BE: 74 D0                 ADC     P_Temp+2
+   252 00:C5C0: 7F D0                 STA     P_Temp+2
+   253 00:C5C2: 73 D5                 LDA     P_Temp+7
+   254 00:C5C4: 74 CF                 ADC     P_Temp+1
+   255 00:C5C6: 7F CF                 STA     P_Temp+1
+   256 00:C5C8: 79 CE                 DEC     P_Temp
+   257 00:C5CA: 16 B7 C5              JMP     L_Loop_Mul10
+   258                        
+   259                        L_Counter_T_Decimals_1:
+   260 00:C5CD: 53 00                 LDA     #0
+   261 00:C5CF: 7F D3                 STA     P_Temp+5
+   262                        L_Loop_Counter_T_Decimals:;通过减法得到余数占当前温度的十分之几作为10分位数
+   263 00:C5D1: 00            		SEC
+   264 00:C5D2: 73 D0                 LDA     P_Temp+2
+   265 00:C5D4: 65 28 C6              SBC     Table_Temperature,X
+   266 00:C5D7: 7F D0                 STA     P_Temp+2
+   267 00:C5D9: 73 CF                 LDA     P_Temp+1
+   268 00:C5DB: 55 00                 SBC     #0
+   269 00:C5DD: 7F CF                 STA     P_Temp+1
+   270 00:C5DF: 10 05                 BCC     L_End_Counter_T_Decimals
+   271 00:C5E1: 78 D3                 INC     P_Temp+5
+   272 00:C5E3: 16 D1 C5              JMP     L_Loop_Counter_T_Decimals
+   273                        L_End_Counter_T_Decimals:
+   274 00:C5E6: 09            	RTS
+   275                        
+   276                        ;------------------------------------------------
+   277                        L_R0Data_LeftMove4Bit:
+   278 00:C5E7: 53 04                 LDA     #4
+   279 00:C5E9: 7F CE                 STA     P_Temp
+   280                        L_Loop_LeftMove4Bit:
+   281 00:C5EB: 73 CE                 LDA     P_Temp
+   282 00:C5ED: 13 0C                 BEQ     L_End_R0Data_LeftMove4Bit
+   283                        ;        ASL     P_Temp+10
+   284 00:C5EF: 04            		CLC
+   285 00:C5F0: 7A D8         		ROL		P_Temp+10
+   286 00:C5F2: 7A D9                 ROL     P_Temp+11
+   287 00:C5F4: 7A DA                 ROL     P_Temp+12
+   288 00:C5F6: 79 CE                 DEC     P_Temp
+   289 00:C5F8: 16 EB C5              JMP     L_Loop_LeftMove4Bit
+   290                        L_End_R0Data_LeftMove4Bit:
+   291 00:C5FB: 09            	RTS
+   292                        
+   293                        ;------------------------------------------------
+   294                        L_Counter_T_Sbc_Prog:
+   295 00:C5FC: 53 00                 LDA     #0
+   296 00:C5FE: 7F D7                 STA     P_Temp+9
+   297                        L_Loop_Counter_T_Sbc:;通过循环减法得到比值
+   298 00:C600: 00            		SEC
+   299 00:C601: 73 D8                 LDA     P_Temp+10
+   300 00:C603: 75 DB                 SBC     P_Temp+13
+   301 00:C605: 73 D9                 LDA     P_Temp+11
+   302 00:C607: 75 DC                 SBC     P_Temp+14
+   303 00:C609: 73 DA                 LDA     P_Temp+12
+   304 00:C60B: 75 DD                 SBC     P_Temp+15
+   305 00:C60D: 10 18                 BCC     L_End_Counter_T_Sbc_Prog
+   306 00:C60F: 00                    SEC
+   307 00:C610: 73 D8                 LDA     P_Temp+10
+   308 00:C612: 75 DB                 SBC     P_Temp+13
+   309 00:C614: 7F D8                 STA     P_Temp+10
+   310 00:C616: 73 D9                 LDA     P_Temp+11
+   311 00:C618: 75 DC                 SBC     P_Temp+14
+   312 00:C61A: 7F D9                 STA     P_Temp+11
+   313 00:C61C: 73 DA                 LDA     P_Temp+12
+   314 00:C61E: 75 DD                 SBC     P_Temp+15
+   315 00:C620: 7F DA                 STA     P_Temp+12
+   316 00:C622: 78 D7                 INC     P_Temp+9
+   317 00:C624: 16 00 C6              JMP     L_Loop_Counter_T_Sbc
+   318                        L_End_Counter_T_Sbc_Prog:
+   319 00:C627: 09            	RTS
+   320                        
+   321                        ;-----------------------------------------------
+   322                        Table_Temperature:
+   323                        ;--------------------------------------------------
+   324                        ;RR=39K RT=10K
+   325                        ;表的初值是RR*256/RT,后面的值是每个温度的增加值
+   326                        ;--------------------------------------------------
+   327                        ;	DB 28		;-51
+   328                        ;	DB 1		;-50
+   329                        ;	DB 2        ;-49
+   330                        ;	DB 2        ;-48
+   331                        ;	DB 2        ;-47
+   332                        ;	DB 2        ;-46
+   333                        ;	DB 2        ;-45
+   334                        ;	DB 3        ;-44
+   335                        ;	DB 2        ;-43
+   336                        ;	DB 3        ;-42
+   337                        ;	DB 2        ;-41
+   338                        ;	DB 3		;-40
+   339                        ;	DB 3        ;-39
+   340                        ;	DB 3        ;-38
+   341                        ;	DB 3        ;-37
+   342                        ;	DB 4        ;-36
+   343                        ;	DB 3        ;-35
+   344                        ;	DB 4        ;-34
+   345                        ;	DB 4        ;-33
+   346                        ;	DB 4        ;-32
+   347                        ;	DB 4        ;-31
+   348                        ;	DB 5		;-30
+   349                        ;	DB 4        ;-29
+   350                        ;	DB 5        ;-28
+   351                        ;	DB 5        ;-27
+   352                        ;	DB 6        ;-26
+   353                        ;	DB 5        ;-25
+   354                        ;	DB 6        ;-24
+   355                        ;	DB 6        ;-23
+   356                        ;	DB 7        ;-22
+   357                        ;	DB 7        ;-21
+   358                        ;	DB 147	;7		;-20
+   359                        ;	DB 7        ;-19
+   360                        ;	DB 7        ;-18
+   361                        ;	DB 8        ;-17
+   362                        ;	DB 9        ;-16
+   363                        ;	DB 8        ;-15
+   364                        ;	DB 9        ;-14
+   365                        ;	DB 9        ;-13
+   366                        ;	DB 10       ;-12
+   367                        ;	DB 10       ;-11
+   368                        ;	DB 11		;-10	235	;
+   369 00:C628: F6            	DB 246       ;-9
+   370 00:C629: 0B            	DB 11       ;-8
+   371 00:C62A: 0C            	DB 12       ;-7
+   372 00:C62B: 0C            	DB 12       ;-6
+   373 00:C62C: 0D            	DB 13       ;-5
+   374 00:C62D: 0D            	DB 13       ;-4
+   375 00:C62E: 0E            	DB 14       ;-3
+   376 00:C62F: 0E            	DB 14       ;-2
+   377 00:C630: 0F            	DB 15       ;-1
+   378                        ;---------------------------
+   379 00:C631: 10                DB 16      			  ;0		16		;366-255=111
+   380 00:C632: 10                DB 16                 ;1
+   381 00:C633: 11                DB 17                 ;2
+   382 00:C634: 11                DB 17                 ;3
+   383 00:C635: 12                DB 18                 ;4
+   384 00:C636: 12                DB 18                 ;5
+   385 00:C637: 14                DB 20                 ;6
+   386 00:C638: 14                DB 20                 ;7
+   387 00:C639: 14                DB 20                 ;8
+   388 00:C63A: 16                DB 22                 ;9
+   389 00:C63B: 16                DB 22                 ;10
+   390 00:C63C: 17                DB 23                 ;11
+   391 00:C63D: 18                DB 24                 ;12
+   392 00:C63E: 19                DB 25                 ;13
+   393 00:C63F: 19                DB 25                 ;14
+   394 00:C640: 1A                DB 26                 ;15
+   395 00:C641: 1C                DB 28                 ;16
+   396 00:C642: 1C                DB 28                 ;17
+   397 00:C643: 1D                DB 29                 ;18
+   398 00:C644: 1F                DB 31                 ;19
+   399 00:C645: 1F                DB 31                 ;20
+   400 00:C646: 20                DB 32                 ;21
+   401 00:C647: 22                DB 34                 ;22
+   402 00:C648: 22                DB 34                 ;23
+   403 00:C649: 24                DB 36                 ;24
+   404 00:C64A: 24                DB 36                 ;25
+   405 00:C64B: 26                DB 38                 ;26
+   406 00:C64C: 28                DB 40                 ;27
+   407 00:C64D: 28                DB 40                 ;28
+   408 00:C64E: 2A                DB 42                 ;29
+   409 00:C64F: 2B                DB 43                 ;30
+   410 00:C650: 2C                DB 44                 ;31
+   411 00:C651: 2E                DB 46                 ;32
+   412 00:C652: 30                DB 48                 ;33
+   413 00:C653: 30                DB 48                 ;34
+   414 00:C654: 33                DB 51                 ;35
+   415 00:C655: 33                DB 51                 ;36
+   416 00:C656: 36                DB 54                 ;37
+   417 00:C657: 37                DB 55                 ;38
+   418 00:C658: 38                DB 56                 ;39
+   419 00:C659: 3B                DB 59                 ;40
+   420 00:C65A: 3C                DB 60                 ;41
+   421 00:C65B: 3E                DB 62                 ;42
+   422 00:C65C: 40                DB 64                 ;43
+   423 00:C65D: 41                DB 65                 ;44
+   424 00:C65E: 44                DB 68                 ;45
+   425 00:C65F: 45                DB 69                 ;46
+   426 00:C660: 48                DB 72                 ;47
+   427 00:C661: 49                DB 73                 ;48
+   428 00:C662: 4C                DB 76                 ;49
+   429 00:C663: 4E                DB 78                 ;50
+   430 00:C664: 4F                DB 79                 ;51
+   431 00:C665: 52                DB 82                 ;52
+   432 00:C666: 55                DB 85                 ;53
+   433 00:C667: 57                DB 87                 ;54
+   434 00:C668: 59                DB 89                 ;55
+   435 00:C669: 5C                DB 92                 ;56
+   436 00:C66A: 5E                DB 94                 ;57
+   437 00:C66B: 60                DB 96                 ;58
+   438 00:C66C: 64                DB 100                ;59
+   439 00:C66D: 66                DB 102                ;60
+   440 00:C66E: 68            	DB 104				  ;61
+   441 00:C66F: 6C            	DB 108	              ;62
+   442 00:C670: 6E            	DB 110	              ;63
+   443 00:C671: 71            	DB 113	              ;64
+   444 00:C672: 74            	DB 116	              ;65
+   445 00:C673: 77            	DB 119	              ;66
+   446 00:C674: 7B            	DB 123	              ;67
+   447 00:C675: 7D            	DB 125	              ;68
+   448 00:C676: 81            	DB 129	              ;69
+   449 00:C677: 83            	DB 131		          ;70
+   450 00:C678: 88            	DB 136				  ;71
+   451 00:C679: FF                DB 255             	;-
+   452 00:C67A: FF                DB 255             	;-
+   453 00:C67B: FF                DB 255             	;-
+   454                        ;-----------------------------------------------
+   455                        ;===============================================
+   456                        ;R_Temperature_F_L
+   457                        ;R_Temperature_F_H
+   458                        ;-----------------------------------------------
+   459                        ; L_C_SwitchTo_F_Program:
+   460                        ; 		LDA     #0		;无小数点	LDA     R_Temperature_L 	;
+   461                        ;         STA     P_Temp+2
+   462                        ;         LDA     R_Temperature
+   463                        ;         STA     P_Temp+3
+   464                        ;         LDA     #0
+   465                        ;         STA     P_Temp+4
+   466                        ; 		CLC
+   467                        ; 		ROL		P_Temp+2
+   468                        ; 		CLC
+   469                        ; 		ROL		P_Temp+2
+   470                        ; 		CLC
+   471                        ; 		ROL		P_Temp+2
+   472                        ; 		CLC
+   473                        ; 		ROL		P_Temp+2
+   474                        ;         SED
+   475                        ;         CLC
+   476                        ;         LDA     P_Temp+2
+   477                        ;         ADC     P_Temp+2
+   478                        ;         STA     P_Temp+2
+   479                        ;         LDA     P_Temp+3
+   480                        ;         ADC     P_Temp+3
+   481                        ;         STA     P_Temp+3
+   482                        ;         LDA     P_Temp+4
+   483                        ;         ADC     P_Temp+4
+   484                        ;         STA     P_Temp+4
+   485                        ;         CLD
+   486                        ;         LDA     #0
+   487                        ;         STA     P_Temp+5
+   488                        ;         STA     P_Temp+6
+   489                        ;         STA     P_Temp+7
+   490                        ;         LDA     #9
+   491                        ;         STA     P_Temp+1
+   492                        ; L_C_SwitchTo_F_Multiply9:
+   493                        ;         LDA     P_Temp+1
+   494                        ;         BEQ     L_Judge_TF_LL_Over_5
+   495                        ;         SED
+   496                        ;         CLC
+   497                        ;         LDA     P_Temp+2
+   498                        ;         ADC     P_Temp+5
+   499                        ;         STA     P_Temp+5
+   500                        ;         LDA     P_Temp+3
+   501                        ;         ADC     P_Temp+6
+   502                        ;         STA     P_Temp+6
+   503                        ;         LDA     P_Temp+4
+   504                        ;         ADC     P_Temp+7
+   505                        ;         STA     P_Temp+7
+   506                        ;         CLD
+   507                        ;         DEC     P_Temp+1
+   508                        ;         JMP     L_C_SwitchTo_F_Multiply9
+   509                        ; L_Judge_TF_LL_Over_5:
+   510                        ;         LDA     P_Temp+5
+   511                        ;         SBC     #$50
+   512                        ;         BCC     L_C_SwitchTo_F_Adc32
+   513                        ;         SED
+   514                        ;         CLC
+   515                        ;         LDA     #$01
+   516                        ;         ADC     P_Temp+6
+   517                        ;         STA     P_Temp+6
+   518                        ;         LDA     #00
+   519                        ;         ADC     P_Temp+7
+   520                        ;         STA     P_Temp+7
+   521                        ; 		CLD
+   522                        ; L_C_SwitchTo_F_Adc32:
+   523                        ; ;		LDA		R_RTRH_Flag	;负温度
+   524                        ; ;		AND		#$80
+   525                        ; 		LDA		R_Temperature_L
+   526                        ; 		AND		#$80
+   527                        
+   528                        ; 		BNE		L_C_SwitchTo_F_32Sub
+   529                        ;         SED
+   530                        ;         CLC
+   531                        ;         LDA     #$20
+   532                        ;         ADC     P_Temp+6
+   533                        ;         STA     P_Temp+6
+   534                        ;         LDA     #03
+   535                        ;         ADC     P_Temp+7
+   536                        ;         STA     P_Temp+7
+   537                        ; 		CLD
+   538                        ; L_Exit_C_SwitchTo_F_Prog:
+   539                        ;         LDA      P_Temp+6
+   540                        ;         STA      R_Temperature_F_M
+   541                        ;         LDA      P_Temp+7
+   542                        ;         STA      R_Temperature_F_H ;BIT8为1代表显示-F
+   543                        ; 		RTS
+   544                        
+   545                        ; L_C_SwitchTo_F_32Sub:
+   546                        ; 	SED
+   547                        ; 	SEC
+   548                        ; 	LDA		#$20
+   549                        ; 	SBC		P_Temp+6
+   550                        ; 	LDA		#$03
+   551                        ; 	SBC		P_Temp+7
+   552                        ; 	BCS		L_yuanlai	;F值为正
+   553                        ; 	SEC
+   554                        ; 	LDA		P_Temp+6
+   555                        ; 	SBC		#$20
+   556                        ; 	STA		P_Temp+6
+   557                        ; 	LDA		P_Temp+7
+   558                        ; 	SBC		#$03
+   559                        ; 	ORA		#$80
+   560                        ; 	STA		P_Temp+7	;BIT7为显示-F
+   561                        ; 	CLD
+   562                        ; 	JMP		L_Exit_C_SwitchTo_F_Prog
+   563                        ; L_yuanlai:
+   564                        ; 	LDA		#$20
+   565                        ; 	SBC		P_Temp+6
+   566                        ; 	STA		P_Temp+6
+   567                        ; 	LDA		#$03
+   568                        ; 	SBC		P_Temp+7
+   569                        ; 	STA		P_Temp+7
+   570                        ; 	CLD
+   571                        ; 	JMP		L_Exit_C_SwitchTo_F_Prog
+   572                        ; ;-------------------------------------------------------
+   573                        ; ;*******************************************************
+   574                        ; ;-------------------------------------------------------
+   574                        
+   200                        .INCLUDE	Delay.asm
      1                        ;============================================================
      2                        L_ScanKey_Delay_Prog:    ;延时功能
-     3 00:C38C: 53 E0         	LDA		#$E0
-     4 00:C38E: 7F D0         	STA		P_Temp
+     3 00:C67C: 53 E0         	LDA		#$E0
+     4 00:C67E: 7F CE         	STA		P_Temp
      5                        L_Loop_ScanKey_Delay:
-     6 00:C390: 78 D0         	INC		P_Temp
-     7 00:C392: 73 D0         	LDA		P_Temp
-     8 00:C394: 12 FA         	BNE		L_Loop_ScanKey_Delay
-     9 00:C396: 09            	RTS
+     6 00:C680: 78 CE         	INC		P_Temp
+     7 00:C682: 73 CE         	LDA		P_Temp
+     8 00:C684: 12 FA         	BNE		L_Loop_ScanKey_Delay
+     9 00:C686: 09            	RTS
     10                        L_Beep_1s:    ;响一声
-    11 00:C397: 35 A0 07      	BBR5	Sys_Flag_B,L_Beep_1s_RTS
+    11 00:C687: 35 A0 07      	BBR5	Sys_Flag_B,L_Beep_1s_RTS
     12                        L_Beep_1s_Usually:
-    13 00:C39A: 53 01         	LDA		#1
-    14 00:C39C: 4F 83 18      	STA		R_Voice_Unit
+    13 00:C68A: 53 01         	LDA		#1
+    14 00:C68C: 4F 83 18      	STA		R_Voice_Unit
     15                        	EN_LCD_IRQ
-+   15 00:C39F: 2E 0E          SMB6 IER
++   15 00:C68F: 2E 0E          SMB6 IER
     16                        L_Beep_1s_RTS
-    17 00:C3A1: 09            	RTS
+    17 00:C691: 09            	RTS
     17                        
-   198                        
-   199                        ;--------------------------------------------------------
-   200                        ;***********************************************************************
-   201 00:C3A2: FF FF FF FF   	.BLKB	$FFFF-$,$FF
-   201 00:C3A2: FF FF FF FF   
-   201 00:C3A2: FF FF FF FF   
-   202                        
-   203                        	.ORG	0FFF8H
-   204                        
-   205 00:FFF8: D5            	DB		11010101B	;
-   206                        ; bit0 	=0
-   207                        ; bit1	=0
-   208                        ; bit2 	=0当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
-   209                        ; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入下拉和三态
-   210                        ; bit4 	=0
-   211                        ; bit5 	=0
-   212                        ; bit6	=0VDD=1.5V,1 VDD=3V
-   213                        ; bit7	=0做复位，1做PA7口
-   214 00:FFF9: FF            	DB		11111111B	;
-   215                        
-   216                        ;***********************************************************************
-   217                        	.ORG	0FFFCH
-   218 00:FFFC: 00 C0         	DW		V_RESET
-   219 00:FFFE: F1 C0         	DW		V_IRQ
-   220                        
-   221                        	.ENDS
-   222                        	.END
+   201                        
+   202                        ;--------------------------------------------------------
+   203                        ;***********************************************************************
+   204 00:C692: FF FF FF FF   	.BLKB	$FFFF-$,$FF
+   204 00:C692: FF FF FF FF   
+   204 00:C692: FF FF FF FF   
+   205                        
+   206                        	.ORG	0FFF8H
+   207                        
+   208 00:FFF8: D5            	DB		11010101B	;
+   209                        ; bit0 	=0
+   210                        ; bit1	=0
+   211                        ; bit2 	=0当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
+   212                        ; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入下拉和三态
+   213                        ; bit4 	=0
+   214                        ; bit5 	=0
+   215                        ; bit6	=0VDD=1.5V,1 VDD=3V
+   216                        ; bit7	=0做复位，1做PA7口
+   217 00:FFF9: FF            	DB		11111111B	;
+   218                        
+   219                        ;***********************************************************************
+   220                        	.ORG	0FFFCH
+   221 00:FFFC: 00 C0         	DW		V_RESET
+   222 00:FFFE: F1 C0         	DW		V_IRQ
+   223                        
+   224                        	.ENDS
+   225                        	.END
 
  --------------------
       Warnings:0

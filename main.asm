@@ -164,7 +164,7 @@ L_EndIrq:
 
 ; .INCLUDE	Key\ScanKey.ASM
 ; .INCLUDE	Key\Scankey_First_Press.asm
-; .INCLUDE	Key\Scankey_First_Set_Mode.asm
+; .INCLUDE	Key\Konb_Change.asm
 ; .INCLUDE	Key\Scankey_First_Press_Judgment.asm
 ; .INCLUDE	Key\Scankey_Normal.asm
 ; .INCLUDE	Key\ScanKey_Function_Time.ASM
@@ -194,6 +194,9 @@ L_EndIrq:
 ; 
 ; .INCLUDE	Sound\Beep.asm
 
+
+.INCLUDE	RFC\RFC.asm
+.INCLUDE	RFC\Temp.asm
 .INCLUDE	Delay.asm
 
 ;--------------------------------------------------------	

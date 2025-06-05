@@ -3,6 +3,10 @@
 ; PA3 : RR	= 39K
 ; PA4 : RT=  10K
 ; PA5 : (RH303 // 1M) + 510R
+;需要修改的地方：L_Temperature_Low，更改测量最低温度。
+;L_Temperature_High：测量最高温度
+;L_Counter_T_Step2_1：P_TEMP+6控制测量范围
+;
 ;------------------------------------------------
 ;------------------------------------------------
 ;------------------------------------------------
@@ -18,6 +22,9 @@
 ;	STA		R_Temperature_F_H
 ;   STA     R_Temperature_F_M
 ;	RTS
+;   
+
+
 ;------------------------------------------------
 ;************************************************
 ;------------------------------------------------
@@ -57,7 +64,7 @@ L_OK2:
 
         LDA     P_Temp+9
         STA     P_Temp+7
-        JSR     L_R0Data_LeftMove4Bit   ;左移四位
+        JSR     L_R0Data_LeftMove4Bit   ;将温度电阻的值左移四位
         JSR     L_Counter_T_Sbc_Prog    ;再次计算比值
 
         LDA     P_Temp+9
@@ -129,11 +136,12 @@ L_Loop_Counter_T_Step1:
 L_Counter_T_Step2:
     LDA     P_Temp+6
     BNE     L_Counter_T_Step2_1
-L_Temperature_Low:
+L_Temperature_Low:              ;等于0是说明现在是最低温，
+                                ;当小于时跳转到此
 ;	JMP		L_RR_Fail_Program
 	lda		R_Temperature_L
 	AND		#0	;#$0F
-	ORA		#$20
+	ORA		#$9
 	STA		R_Temperature_L
 	
 ;	ORA		#$89
@@ -146,13 +154,13 @@ L_Temperature_Low:
 
 L_Counter_T_Step2_1:
 	SEC
-    LDA     #122-31		;-20~70
+    LDA     #59		;-20~70,控制测量范围
     SBC     P_Temp+6
     BCS     L_Counter_T_Step2_2
 L_Temperature_High:
 	lda		R_Temperature_L
 	AND		#0	;#$0F
-	ORA		#$40
+	ORA		#$50
 	sta		R_Temperature_L
 ;	LDA		#65
 ;	STA		R_Temperature
@@ -160,16 +168,16 @@ L_Temperature_High:
 	RTS
 
 L_Counter_T_Step2_2:
-    JSR     L_Counter_T_Decimals
+    JSR     L_Counter_T_Decimals;P_Temp+5是十分位的温度
     SEC
     LDA     P_Temp+6		
-    SBC     #52-31		;#52	
+    SBC     #41-31		;#52	
     BCS     L_Temperature_Over_0
-	LDA		#52-31
+	LDA		#41-31
 	STA		P_Temp
     LDA     P_Temp+5
 	BEQ     L_Measure_Small0_Temp_L
-	LDA     #51-31
+	LDA     #40-31
 	STA     P_Temp
 L_Measure_Small0_Temp_L:
 	SEC
@@ -225,9 +233,9 @@ L_Test_Ok:
 	BCS		L_Temperature_High
 L_TestOkExit:
 	LDA		R_Temperature
-	JSR		F_Hex_To_Dec
+	JSR		L_A_HexToHexD
 	STA		R_Temperature			;*小于100的十六进制转十进制
-	JMP		L_C_SwitchTo_F_Program
+	RTS
 ;------------------------------------------------
 L_Counter_T_Decimals:
         LDA     #$A
@@ -235,7 +243,7 @@ L_Counter_T_Decimals:
         LDA     #0
         STA     P_Temp+1
         STA     P_Temp+2
-L_Loop_Mul10:
+L_Loop_Mul10:           ;将剩下的比值乘以10
         LDA     P_Temp
         BEQ     L_Counter_T_Decimals_1
         CLC
@@ -251,7 +259,7 @@ L_Loop_Mul10:
 L_Counter_T_Decimals_1:
         LDA     #0
         STA     P_Temp+5
-L_Loop_Counter_T_Decimals:
+L_Loop_Counter_T_Decimals:;通过减法得到余数占当前温度的十分之几作为10分位数
 		SEC
         LDA     P_Temp+2                                              
         SBC     Table_Temperature,X
@@ -314,6 +322,7 @@ L_End_Counter_T_Sbc_Prog:
 Table_Temperature:
 ;--------------------------------------------------
 ;RR=39K RT=10K
+;表的初值是RR*256/RT,后面的值是每个温度的增加值
 ;--------------------------------------------------
 ;	DB 28		;-51	
 ;	DB 1		;-50
@@ -346,18 +355,18 @@ Table_Temperature:
 ;	DB 6        ;-23
 ;	DB 7        ;-22
 ;	DB 7        ;-21
-	DB 147	;7		;-20
-	DB 7        ;-19
-	DB 7        ;-18
-	DB 8        ;-17
-	DB 9        ;-16
-	DB 8        ;-15
-	DB 9        ;-14
-	DB 9        ;-13
-	DB 10       ;-12
-	DB 10       ;-11
-	DB 11		;-10	235	;
-	DB 11       ;-9
+;	DB 147	;7		;-20
+;	DB 7        ;-19
+;	DB 7        ;-18
+;	DB 8        ;-17
+;	DB 9        ;-16
+;	DB 8        ;-15
+;	DB 9        ;-14
+;	DB 9        ;-13
+;	DB 10       ;-12
+;	DB 10       ;-11
+;	DB 11		;-10	235	;
+	DB 246       ;-9
 	DB 11       ;-8
 	DB 12       ;-7
 	DB 12       ;-6
@@ -447,119 +456,119 @@ Table_Temperature:
 ;R_Temperature_F_L
 ;R_Temperature_F_H
 ;-----------------------------------------------
-L_C_SwitchTo_F_Program:
-		LDA     #0		;无小数点	LDA     R_Temperature_L 	;
-        STA     P_Temp+2
-        LDA     R_Temperature
-        STA     P_Temp+3
-        LDA     #0
-        STA     P_Temp+4
-		CLC
-		ROL		P_Temp+2
-		CLC
-		ROL		P_Temp+2
-		CLC
-		ROL		P_Temp+2
-		CLC
-		ROL		P_Temp+2
-        SED
-        CLC
-        LDA     P_Temp+2
-        ADC     P_Temp+2
-        STA     P_Temp+2
-        LDA     P_Temp+3
-        ADC     P_Temp+3
-        STA     P_Temp+3
-        LDA     P_Temp+4
-        ADC     P_Temp+4
-        STA     P_Temp+4
-        CLD
-        LDA     #0
-        STA     P_Temp+5
-        STA     P_Temp+6
-        STA     P_Temp+7
-        LDA     #9
-        STA     P_Temp+1
-L_C_SwitchTo_F_Multiply9:
-        LDA     P_Temp+1
-        BEQ     L_Judge_TF_LL_Over_5
-        SED
-        CLC
-        LDA     P_Temp+2
-        ADC     P_Temp+5
-        STA     P_Temp+5
-        LDA     P_Temp+3
-        ADC     P_Temp+6
-        STA     P_Temp+6
-        LDA     P_Temp+4
-        ADC     P_Temp+7
-        STA     P_Temp+7
-        CLD
-        DEC     P_Temp+1
-        JMP     L_C_SwitchTo_F_Multiply9
-L_Judge_TF_LL_Over_5:
-        LDA     P_Temp+5
-        SBC     #$50
-        BCC     L_C_SwitchTo_F_Adc32
-        SED
-        CLC
-        LDA     #$01
-        ADC     P_Temp+6
-        STA     P_Temp+6
-        LDA     #00
-        ADC     P_Temp+7
-        STA     P_Temp+7
-		CLD
-L_C_SwitchTo_F_Adc32:
-;		LDA		R_RTRH_Flag	;负温度
-;		AND		#$80
-		LDA		R_Temperature_L
-		AND		#$80
+; L_C_SwitchTo_F_Program:
+; 		LDA     #0		;无小数点	LDA     R_Temperature_L 	;
+;         STA     P_Temp+2
+;         LDA     R_Temperature
+;         STA     P_Temp+3
+;         LDA     #0
+;         STA     P_Temp+4
+; 		CLC
+; 		ROL		P_Temp+2
+; 		CLC
+; 		ROL		P_Temp+2
+; 		CLC
+; 		ROL		P_Temp+2
+; 		CLC
+; 		ROL		P_Temp+2
+;         SED
+;         CLC
+;         LDA     P_Temp+2
+;         ADC     P_Temp+2
+;         STA     P_Temp+2
+;         LDA     P_Temp+3
+;         ADC     P_Temp+3
+;         STA     P_Temp+3
+;         LDA     P_Temp+4
+;         ADC     P_Temp+4
+;         STA     P_Temp+4
+;         CLD
+;         LDA     #0
+;         STA     P_Temp+5
+;         STA     P_Temp+6
+;         STA     P_Temp+7
+;         LDA     #9
+;         STA     P_Temp+1
+; L_C_SwitchTo_F_Multiply9:
+;         LDA     P_Temp+1
+;         BEQ     L_Judge_TF_LL_Over_5
+;         SED
+;         CLC
+;         LDA     P_Temp+2
+;         ADC     P_Temp+5
+;         STA     P_Temp+5
+;         LDA     P_Temp+3
+;         ADC     P_Temp+6
+;         STA     P_Temp+6
+;         LDA     P_Temp+4
+;         ADC     P_Temp+7
+;         STA     P_Temp+7
+;         CLD
+;         DEC     P_Temp+1
+;         JMP     L_C_SwitchTo_F_Multiply9
+; L_Judge_TF_LL_Over_5:
+;         LDA     P_Temp+5
+;         SBC     #$50
+;         BCC     L_C_SwitchTo_F_Adc32
+;         SED
+;         CLC
+;         LDA     #$01
+;         ADC     P_Temp+6
+;         STA     P_Temp+6
+;         LDA     #00
+;         ADC     P_Temp+7
+;         STA     P_Temp+7
+; 		CLD
+; L_C_SwitchTo_F_Adc32:
+; ;		LDA		R_RTRH_Flag	;负温度
+; ;		AND		#$80
+; 		LDA		R_Temperature_L
+; 		AND		#$80
 
-		BNE		L_C_SwitchTo_F_32Sub
-        SED
-        CLC
-        LDA     #$20
-        ADC     P_Temp+6
-        STA     P_Temp+6
-        LDA     #03
-        ADC     P_Temp+7
-        STA     P_Temp+7
-		CLD
-L_Exit_C_SwitchTo_F_Prog:
-        LDA      P_Temp+6
-        STA      R_Temperature_F_M
-        LDA      P_Temp+7
-        STA      R_Temperature_F_H ;BIT8为1代表显示-F
-		RTS
+; 		BNE		L_C_SwitchTo_F_32Sub
+;         SED
+;         CLC
+;         LDA     #$20
+;         ADC     P_Temp+6
+;         STA     P_Temp+6
+;         LDA     #03
+;         ADC     P_Temp+7
+;         STA     P_Temp+7
+; 		CLD
+; L_Exit_C_SwitchTo_F_Prog:
+;         LDA      P_Temp+6
+;         STA      R_Temperature_F_M
+;         LDA      P_Temp+7
+;         STA      R_Temperature_F_H ;BIT8为1代表显示-F
+; 		RTS
 
-L_C_SwitchTo_F_32Sub:
-	SED
-	SEC
-	LDA		#$20
-	SBC		P_Temp+6
-	LDA		#$03
-	SBC		P_Temp+7
-	BCS		L_yuanlai	;F值为正
-	SEC
-	LDA		P_Temp+6
-	SBC		#$20
-	STA		P_Temp+6
-	LDA		P_Temp+7
-	SBC		#$03
-	ORA		#$80
-	STA		P_Temp+7	;BIT7为显示-F
-	CLD
-	JMP		L_Exit_C_SwitchTo_F_Prog
-L_yuanlai:
-	LDA		#$20
-	SBC		P_Temp+6
-	STA		P_Temp+6
-	LDA		#$03
-	SBC		P_Temp+7
-	STA		P_Temp+7
-	CLD
-	JMP		L_Exit_C_SwitchTo_F_Prog
-;-------------------------------------------------------
-;*******************************************************
-;-------------------------------------------------------
+; L_C_SwitchTo_F_32Sub:
+; 	SED
+; 	SEC
+; 	LDA		#$20
+; 	SBC		P_Temp+6
+; 	LDA		#$03
+; 	SBC		P_Temp+7
+; 	BCS		L_yuanlai	;F值为正
+; 	SEC
+; 	LDA		P_Temp+6
+; 	SBC		#$20
+; 	STA		P_Temp+6
+; 	LDA		P_Temp+7
+; 	SBC		#$03
+; 	ORA		#$80
+; 	STA		P_Temp+7	;BIT7为显示-F
+; 	CLD
+; 	JMP		L_Exit_C_SwitchTo_F_Prog
+; L_yuanlai:
+; 	LDA		#$20
+; 	SBC		P_Temp+6
+; 	STA		P_Temp+6
+; 	LDA		#$03
+; 	SBC		P_Temp+7
+; 	STA		P_Temp+7
+; 	CLD
+; 	JMP		L_Exit_C_SwitchTo_F_Prog
+; ;-------------------------------------------------------
+; ;*******************************************************
+; ;-------------------------------------------------------
