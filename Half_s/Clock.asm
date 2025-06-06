@@ -68,6 +68,34 @@ L_Update_Time_Year_Prog:;时间年更新加
 	JSR		L_Inc_To_Any_Count_Prog
 	JSR		L_Judge_MaxDay_Prog
 	RTS	
+;======================================
+
+L_Update_Time_Min_Prog_DEC:;时间分钟更新减
+	LDX		#(R_Time_Min-Time_Str_Addr)
+	JMP		L_Dec_To_60_Prog
+;---------------------------
+L_Update_Time_Hr_Prog_DEC:;时间小时更新加
+	LDX		#(R_Time_Hr-Time_Str_Addr)
+	LDA		#23H
+	JMP		L_Dec_To_Anycount_Prog
+;----------------------------------
+L_Update_Time_Day_Prog_DEC:;时间天数更新加
+	JSR		L_Check_MaxDay_Prog
+	LDX		#(R_Time_Day-Time_Str_Addr)
+	JMP		L_Dec_To_1_Prog
+;-------------------------------------
+L_Update_Time_Month_Prog_DEC:;时间月更新加
+	LDX		#(R_Time_Month-Time_Str_Addr)
+	LDA		#12H
+	JMP		L_Dec_To_1_Prog
+
+;----------------------------------
+L_Update_Time_Year_Prog_DEC:;时间年更新加
+	LDX		#(R_Time_Year-Time_Str_Addr)
+	LDA		#99H
+	JSR		L_Dec_To_Anycount_Prog
+	JSR		L_Judge_MaxDay_Prog
+	RTS
 ;================================
 L_Inc_To_60_Prog:;将数从0加到59
 	LDA		#59H	

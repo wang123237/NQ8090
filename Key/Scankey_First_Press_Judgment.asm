@@ -25,10 +25,10 @@ L_Scankey_Prog_First_1:
 	LDA		#0
 	STA		R_Scankey_Time
 	SMB2	Sys_Flag_A
-;=======================
-;-----按键无效键和按下触发的事件判定
-	BBS3	Sys_Flag_A,L_Scankey_Set_Mode_First_Press_Prog_TO
 
+	LDA		P_Scankey_value
+	CMP		#D_12_24_Hour_Press
+	BEQ		L_Control_12_24_Hour_Prog	
 	LDA		R_Mode
 	BEQ		L_Timer_Clock_Prog_TO
 	
@@ -40,6 +40,17 @@ L_Timer_Clock_Prog_TO:
 	JMP		L_Timer_Clock_Prog
 
 
+;===========================================================
+L_Control_12_24_Hour_Prog:
+	BBS2	Sys_Flag_B,L_Control_24_TO_12_Prog
+	SMB2	Sys_Flag_B
+	JSR		L_Display_Prog
+	RTS	
+L_Control_24_TO_12_Prog:
+	RMB2	Sys_Flag_B
+	JSR		L_Display_Prog
+	RTS	
+;===========================================================
 L_Scankey_usually_Prog:
 	LDA		#0
 	STA		P_Scankey_value_Temporary

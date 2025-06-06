@@ -2,7 +2,7 @@ Modules list:
 -------------
 main.o:
     BSS               Offs = 000000   Size = 000005
-    ZEROPAGE          Offs = 000000   Size = 00006A
+    ZEROPAGE          Offs = 000000   Size = 00006F
     PROG              Offs = 000000   Size = 004005
 
 
@@ -11,7 +11,7 @@ Segment list:
 Name                  Start   End     Size
 --------------------------------------------
 BSS                   000000  000004  000005
-ZEROPAGE              000080  0000E9  00006A
+ZEROPAGE              000080  0000EE  00006F
 PROG                  00FFFC  014000  004005
 
 

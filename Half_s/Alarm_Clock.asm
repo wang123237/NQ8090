@@ -101,3 +101,82 @@ L_Judgement_Alarm_Clock_Prog_5:
 L_Judgement_Alarm_Clock_Prog_5_RTS:
 	RTS
 
+
+;==============================================
+L_Update_Alarm_Clock_Min_Prog:
+	LDX		#(R_Alarm_Clock_Min-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	JMP		L_Inc_To_60_Prog
+;-----------------------------------------------
+L_Update_Alarm_Clock_Hr_Prog:
+	LDX		#(R_Alarm_Clock_Min-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#23H
+	JMP		L_Inc_To_Any_Count_Prog
+;-----------------------------------------------
+L_Update_Alarm_Clock_Snz_Time_Prog:
+	LDX		#(R_Snz_Time-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#30H
+	JMP		L_Inc_To_Any_Count_Prog
+;--------------------------------------------
+L_Update_Alarm_Clock_State_Prog:
+	LDX		#(R_Alarm_Clock_State-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#3H
+	JMP		L_Inc_To_Any_Count_Prog
+;===================================================
+L_Update_Alarm_Clock_Min_Prog_DEC:
+	LDX		#(R_Alarm_Clock_Min-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	JMP		L_DEC_To_60_Prog
+;-----------------------------------------------
+L_Update_Alarm_Clock_Hr_Prog_DEC:
+	LDX		#(R_Alarm_Clock_Min-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#23H
+	JMP		L_DEC_To_Any_Count_Prog
+;-----------------------------------------------
+L_Update_Alarm_Clock_Snz_Time_Prog_DEC:
+	LDX		#(R_Snz_Time-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#30H
+	JMP		L_DEC_To_Any_Count_Prog
+;--------------------------------------------
+L_Update_Alarm_Clock_State_Prog_DEC:
+	LDX		#(R_Alarm_Clock_State-Time_Str_Addr)
+	TXA
+	CLC
+	ADC		R_Mode
+	DEC
+	TAX
+	LDA		#3H
+	JMP		L_DEC_To_Any_Count_Prog

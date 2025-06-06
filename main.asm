@@ -197,6 +197,8 @@ L_EndIrq:
 
 .INCLUDE	RFC\RFC.asm
 .INCLUDE	RFC\Temp.asm
+
+.INCLUDE	Bat_I2C\Bat_I2C.asm
 .INCLUDE	Delay.asm
 
 ;--------------------------------------------------------	

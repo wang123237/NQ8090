@@ -1,12 +1,25 @@
-L_Timer_Prog:
+L_Timer_Clock_Prog:
     LDA     P_Scankey_value
     CMP     #D_KNOB_Press
     BEQ     L_Control_Timer_ST_SP_Prog
-    CMP     #
+    CMP     #D_Voice_Press
+    BEQ     L_Control_Beep_Silence_Prog
+    CMP     L_Timer_Clock_Prog
+    BEQ     L_Timer_Clock_Prog_RTS
+    SMB5    Sys_Flag_A    
+L_Timer_Clock_Prog_RTS:
+    RTS
+;===================================================
+L_Control_Beep_Silence_Prog:
+    BBS6    Sys_Flag_D,L_Control_Beep_Silence
+    JSR     L_Display_Beep_Sclient_Prog
+    RTS
+L_Control_Beep_Silence:
+    RMB6    Sys_Flag_D
+    JSR     L_Display_Beep_Sclient_Prog
+    RTS
 
-
-
-
+;==================================================
 
 
 L_Control_Timer_ST_SP_Prog:

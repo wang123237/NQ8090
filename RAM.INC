@@ -75,6 +75,9 @@ D_Rscankey_Sec					EQU	32
 D_Rscankey_TWO_Sec				EQU	64
 
 
+
+
+
 P_Scankey_value_T_1			DS	1
 P_Scankey_value				DS	1;按键存储值
 P_Scankey_value_Temporary	DS	1;按键临时储存
@@ -164,8 +167,15 @@ R_Temperature_L      	DS  1		;是否为零下温度
 R_RFCCH					DS	1
 ; R_KeyCnt				DS	1
 
-
-
+;============================================
+;读取电量所需要的内存
+;============================================
+P_PC_IO_Backup					DS	1
+P_PC_DIR_Backup					.EQU	P_PC_IO_Backup
+P_PC_Backup						DS	1
+R_Delay							DS	1	;
+R_BatGrade						DS	1
+R_Bat_Data						DS	1
 
 ;---------------------------------------       
 

@@ -1,4 +1,4 @@
-Thu Jun 05 15:20:22 2025
+Fri Jun 06 11:16:19 2025
 -------------------------
 CAS V2.15.1-rc1 - (C) Copyright 2000-2012 CHIPMAST TECHNOLOGY CO. LTD.
 Main file   : main.asm
@@ -201,126 +201,136 @@ Current file: main.asm
     75                        D_Rscankey_TWO_Sec				EQU	64
     76                        
     77                        
-    78 00:00A6: xx            P_Scankey_value_T_1			DS	1
-    79 00:00A7: xx            P_Scankey_value				DS	1;按键存储值
-    80 00:00A8: xx            P_Scankey_value_Temporary	DS	1;按键临时储存
-    81                        
-    82                        D_Scankey_Value				.EQU	11110100B
-    83                        D_Date_Time_Press			.EQU	00010000B
-    84                        D_12_24_Hour_Press			.EQU	00100000B
-    85                        D_ALM_Press					.EQU	01000000B
-    86                        D_Voice_Press				.EQU	10000000B
-    87                        D_KNOB_Press				.EQU	00000100B
-    88                        D_Konb_Value				.EQU	00000011B
-    89                        ;---------------------------------------
-    90                        Time_Str_Addr	EQU		$
-    91 00:00A9: xx            R_Time_Sec						DS	1;时钟的秒数;
-    92 00:00AA: xx            R_Time_Min						DS	1;时钟的分钟数;
-    93 00:00AB: xx            R_Time_Hr 						DS	1;时钟的小时数;
-    94 00:00AC: xx            R_Time_Day 						DS	1;日
-    95 00:00AD: xx            R_Time_Month 					DS	1;月
-    96 00:00AE: xx            R_Time_Year						DS	1;年
-    97 00:00AF: xx            R_Time_Week						DS	1;0是星期天，1是星期一---
-    98                        
-    99                        
-   100                        
+    78                        
+    79                        
+    80                        
+    81 00:00A6: xx            P_Scankey_value_T_1			DS	1
+    82 00:00A7: xx            P_Scankey_value				DS	1;按键存储值
+    83 00:00A8: xx            P_Scankey_value_Temporary	DS	1;按键临时储存
+    84                        
+    85                        D_Scankey_Value				.EQU	11110100B
+    86                        D_Date_Time_Press			.EQU	00010000B
+    87                        D_12_24_Hour_Press			.EQU	00100000B
+    88                        D_ALM_Press					.EQU	01000000B
+    89                        D_Voice_Press				.EQU	10000000B
+    90                        D_KNOB_Press				.EQU	00000100B
+    91                        D_Konb_Value				.EQU	00000011B
+    92                        ;---------------------------------------
+    93                        Time_Str_Addr	EQU		$
+    94 00:00A9: xx            R_Time_Sec						DS	1;时钟的秒数;
+    95 00:00AA: xx            R_Time_Min						DS	1;时钟的分钟数;
+    96 00:00AB: xx            R_Time_Hr 						DS	1;时钟的小时数;
+    97 00:00AC: xx            R_Time_Day 						DS	1;日
+    98 00:00AD: xx            R_Time_Month 					DS	1;月
+    99 00:00AE: xx            R_Time_Year						DS	1;年
+   100 00:00AF: xx            R_Time_Week						DS	1;0是星期天，1是星期一---
    101                        
    102                        
-   103 00:00B0: xx            R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
-   104 00:00B1: xx            R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
-   105 00:00B2: xx            R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
-   106 00:00B3: xx            Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
-   107 00:00B4: xx            Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
-   108 00:00B5: xx            Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
-   109 00:00B6: xx            Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
-   110 00:00B7: xx            Timer_TurnPlate_Frequeny		DS	1;转盘数
-   111                        
-   112                        
-   113 00:00B8: xx xx xx xx   R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
-   113 00:00B8: xx            
+   103                        
+   104                        
+   105                        
+   106 00:00B0: xx            R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
+   107 00:00B1: xx            R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
+   108 00:00B2: xx            R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
+   109 00:00B3: xx            Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
+   110 00:00B4: xx            Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
+   111 00:00B5: xx            Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
+   112 00:00B6: xx            Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
+   113 00:00B7: xx            Timer_TurnPlate_Frequeny		DS	1;转盘数
    114                        
-   115 00:00BD: xx xx xx xx   R_Alarm_Clock_Hr				DS	5
-   115 00:00BD: xx            
-   116 00:00C2: xx xx xx xx   R_Alarm_Clock_Min				DS	5
-   116 00:00C2: xx            
-   117 00:00C7: xx xx xx xx   R_Snz_Time						DS	5
-   117 00:00C7: xx            
-   118                        
-   119                        
-   120                        
-   121                        D_Beep_Open_Last_Time_Alarm		EQU	21
+   115                        
+   116 00:00B8: xx xx xx xx   R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
+   116 00:00B8: xx            
+   117                        
+   118 00:00BD: xx xx xx xx   R_Alarm_Clock_Hr				DS	5
+   118 00:00BD: xx            
+   119 00:00C2: xx xx xx xx   R_Alarm_Clock_Min				DS	5
+   119 00:00C2: xx            
+   120 00:00C7: xx xx xx xx   R_Snz_Time						DS	5
+   120 00:00C7: xx            
+   121                        
    122                        
    123                        
-   124                        D_Snz_Time						EQU	5
-   125                        D_Snz_Frequency					EQU	6
+   124                        D_Beep_Open_Last_Time_Alarm		EQU	21
+   125                        
    126                        
-   127                        
-   128 00:00CC: xx            R_Mode_Set					DS	1;设置模式
+   127                        D_Snz_Time						EQU	5
+   128                        D_Snz_Frequency					EQU	6
    129                        
-   130 00:00CD: xx            Konb_Last_State				DS	1
-   131                        
+   130                        
+   131 00:00CC: xx            R_Mode_Set					DS	1;设置模式
    132                        
-   133                        
-   134 00:00CE: xx xx xx xx   P_Temp			ds	16
-   134 00:00CE: xx xx xx xx   
-   134 00:00CE: xx xx xx xx   
-   135                        R_Tmp0	equ	P_Temp
-   136                        R_Tmp1	equ	P_Temp+1
-   137                        R_Tmp2	equ	P_Temp+2
-   138                        R_Tmp3	equ	P_Temp+3
-   139                        lcd_tmp_mask	equ	P_Temp+9
-   140                        lcd_tmp_bit		equ	P_Temp+10
-   141                        
-   142                        ;==============================温湿度内存
-   143                        
+   133 00:00CD: xx            Konb_Last_State				DS	1
+   134                        
+   135                        
+   136                        
+   137 00:00CE: xx xx xx xx   P_Temp			ds	16
+   137 00:00CE: xx xx xx xx   
+   137 00:00CE: xx xx xx xx   
+   138                        R_Tmp0	equ	P_Temp
+   139                        R_Tmp1	equ	P_Temp+1
+   140                        R_Tmp2	equ	P_Temp+2
+   141                        R_Tmp3	equ	P_Temp+3
+   142                        lcd_tmp_mask	equ	P_Temp+9
+   143                        lcd_tmp_bit		equ	P_Temp+10
    144                        
-   145                        
-   146 00:00DE: xx            R_RT_L					DS	1		;温度电阻
-   147 00:00DF: xx            R_RT_M					DS  1
-   148 00:00E0: xx            R_RT_H                  DS  1
-   149 00:00E1: xx            R_RR_L					DS	1		;标准电阻
-   150 00:00E2: xx            R_RR_M                  DS  1
-   151 00:00E3: xx            R_RR_H                  DS  1
-   152 00:00E4: xx            R_RH_L					DS	1		;湿度电阻
-   153 00:00E5: xx            R_RH_M                  DS  1
-   154 00:00E6: xx            R_RH_H                  DS  1
-   155                        ;R_Measure_Temperature   DS
-   156 00:00E7: xx            R_Temperature        	DS	1		;温度
-   157 00:00E8: xx            R_Temperature_L      	DS  1		;是否为零下温度
-   158                        ;R_Temperature_F_M		DS  1
-   159                        ;R_Temperature_F_H		DS  1
-   160                        
-   161                        ; R_Humidity				DS  1
-   162                        ;
-   163                        ; R_Humidity_Level		DS  1
-   164 00:00E9: xx            R_RFCCH					DS	1
-   165                        ; R_KeyCnt				DS	1
-   166                        
-   167                        
-   168                        
+   145                        ;==============================温湿度内存
+   146                        
+   147                        
+   148                        
+   149 00:00DE: xx            R_RT_L					DS	1		;温度电阻
+   150 00:00DF: xx            R_RT_M					DS  1
+   151 00:00E0: xx            R_RT_H                  DS  1
+   152 00:00E1: xx            R_RR_L					DS	1		;标准电阻
+   153 00:00E2: xx            R_RR_M                  DS  1
+   154 00:00E3: xx            R_RR_H                  DS  1
+   155 00:00E4: xx            R_RH_L					DS	1		;湿度电阻
+   156 00:00E5: xx            R_RH_M                  DS  1
+   157 00:00E6: xx            R_RH_H                  DS  1
+   158                        ;R_Measure_Temperature   DS
+   159 00:00E7: xx            R_Temperature        	DS	1		;温度
+   160 00:00E8: xx            R_Temperature_L      	DS  1		;是否为零下温度
+   161                        ;R_Temperature_F_M		DS  1
+   162                        ;R_Temperature_F_H		DS  1
+   163                        
+   164                        ; R_Humidity				DS  1
+   165                        ;
+   166                        ; R_Humidity_Level		DS  1
+   167 00:00E9: xx            R_RFCCH					DS	1
+   168                        ; R_KeyCnt				DS	1
    169                        
-   170                        ;---------------------------------------
-   171                        
-   172                        ;显示从写P_Temp+4
-   173                        ;---------------------------------------
-   174                        ;---------------------------------------
-   175                        ;***************************************
-   176                        .ENDS
-   177                        ;***************************************
-   178                        .Udata
-   179                        ;---------------------------------------
-   180                        	ORG    1880H
-   181                        ;---------------------------------------
-   182                        ;---------------------------------------
-   183 00:1880: xx            R_Set_Mode_Exit_Time			DS	1;自动设置退出时间
-   184                        D_Set_Mode_Exit_Time			EQU	6
-   185 00:1881: xx            R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
-   186 00:1882: xx            R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
-   187 00:1883: xx            R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
-   188 00:1884: xx            R_Mode							DS	1
-   189                        
-   190                        .ENDS
-   190                        
+   170                        ;============================================
+   171                        ;读取电量所需要的内存
+   172                        ;============================================
+   173 00:00EA: xx            P_PC_IO_Backup					DS	1
+   174                        P_PC_DIR_Backup					.EQU	P_PC_IO_Backup
+   175 00:00EB: xx            P_PC_Backup						DS	1
+   176 00:00EC: xx            R_Delay							DS	1	;
+   177 00:00ED: xx            R_BatGrade						DS	1
+   178 00:00EE: xx            R_Bat_Data						DS	1
+   179                        
+   180                        ;---------------------------------------
+   181                        
+   182                        ;显示从写P_Temp+4
+   183                        ;---------------------------------------
+   184                        ;---------------------------------------
+   185                        ;***************************************
+   186                        .ENDS
+   187                        ;***************************************
+   188                        .Udata
+   189                        ;---------------------------------------
+   190                        	ORG    1880H
+   191                        ;---------------------------------------
+   192                        ;---------------------------------------
+   193 00:1880: xx            R_Set_Mode_Exit_Time			DS	1;自动设置退出时间
+   194                        D_Set_Mode_Exit_Time			EQU	6
+   195 00:1881: xx            R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
+   196 00:1882: xx            R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
+   197 00:1883: xx            R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
+   198 00:1884: xx            R_Mode							DS	1
+   199                        
+   200                        .ENDS
+   200                        
     22                        	.include	50P016.mac
      1                        ;------------------------------------
      2                        PB2_PB2_COMS MACRO
@@ -3164,53 +3174,290 @@ Current file: main.asm
    573                        ; ;*******************************************************
    574                        ; ;-------------------------------------------------------
    574                        
-   200                        .INCLUDE	Delay.asm
+   200                        
+   201                        .INCLUDE	Bat_I2C\Bat_I2C.asm
+     1                        ;需要内存：
+     2                        
+     3                        L_I2C_BatData:
+     4                        L_SendStart:
+     5                        	; LDA		R_BOP
+     6                        	; AND		#BIT0
+     7                        	; BEQ		L_SendStart_
+     8                        	; LDA		R_Light_Time
+     9                        	; BNE		L_End_GetBatData
+    10                        L_SendStart_:
+    11 00:C67C: 73 EA         	LDA		P_PC_DIR_Backup
+    12 00:C67E: 51 EF         	AND		#11101111B;PC4   11011111;PC5	;修改
+    13 00:C680: 7F EA         	STA		P_PC_DIR_Backup
+    14                        ;	LDA		P_PCIO
+    15                        ;	AND		#~BIT3
+    16 00:C682: 7F 08         	STA		P_PC_DIR		;将改变的值变为输出
+    17                        
+    18 00:C684: 73 EB         	LDA		P_PC_Backup
+    19 00:C686: 51 EF         	AND		#11101111B
+    20 00:C688: 7F EB         	STA		P_PC_Backup		;将对应的口变为输出低
+    21 00:C68A: 7F 07         	STA		P_PC
+    22                        ;	LDA		P_PC
+    23                        ;	AND		#~BIT3
+    24                        ;	STA		P_PC
+    25                        
+    26                        
+    27                        
+    28                        
+    29 00:C68C: 15 9E C7      	JSR		Delay_1ms
+    30 00:C68F: 15 9E C7      	JSR		Delay_1ms
+    31 00:C692: 15 9E C7      	JSR		Delay_1ms
+    32 00:C695: 15 9E C7      	JSR		Delay_1ms
+    33 00:C698: 15 9E C7      	JSR		Delay_1ms
+    34 00:C69B: 15 9E C7      	JSR		Delay_1ms
+    35 00:C69E: 15 9E C7      	JSR		Delay_1ms	;7个延时1ms
+    36                        
+    37 00:C6A1: 01            	SEI							;禁用中断
+    38 00:C6A2: 73 EA         	LDA		P_PC_DIR_Backup
+    39 00:C6A4: 50 10         	ORA		#00010000B			;修改
+    40 00:C6A6: 7F EA         	STA		P_PC_DIR_Backup
+    41                        ;	LDA		P_PCIO
+    42                        ;	ORA		#020H
+    43 00:C6A8: 7F 08         	STA		P_PC_DIR
+    44 00:C6AA: 15 95 C7      	JSR		Delay_50us		;将对应的I/O口变为输入下拉
+    45                        ;	RTS
+    46                        L_ReadwWait:
+    47 00:C6AD: 53 C8         	LDA		#200
+    48 00:C6AF: 7F EC         	STA		R_Delay
+    49                        L_ReadwWait_:
+    50 00:C6B1: 73 07         	LDA		P_PC
+    51 00:C6B3: 51 10         	AND		#00010000B					;读取对应的口，修改
+    52 00:C6B5: 13 0C         	BEQ		L_GotoReceiveData
+    53 00:C6B7: 15 95 C7      	JSR		Delay_50us
+    54 00:C6BA: 15 95 C7      	JSR		Delay_50us
+    55 00:C6BD: 79 EC         	DEC		R_Delay
+    56 00:C6BF: 12 F0         	BNE		L_ReadwWait_
+    57 00:C6C1: 05            	CLI
+    58                        L_End_GetBatData:
+    59 00:C6C2: 09            	RTS		;20MS读等待超时
+    60                        
+    61                        L_GotoReceiveData:
+    62 00:C6C3: 53 00         	LDA		#0
+    63 00:C6C5: 7F ED         	STA		R_BatGrade
+    64 00:C6C7: 7F EC         	STA		R_Delay
+    65                        L_GotoReceiveData_Bit0_L:
+    66                        ;	JSR		Delay_50us
+    67                        L_Loop_Bit0_L:
+    68 00:C6C9: 73 07         	LDA		P_PC
+    69 00:C6CB: 51 20         	AND		#020H
+    70 00:C6CD: 12 09         	BNE		L_GotoReceiveData_Bit0_H
+    71 00:C6CF: 15 95 C7      	JSR		Delay_50us
+    72 00:C6D2: 78 EC         	INC		R_Delay
+    73 00:C6D4: 12 F3         	BNE		L_Loop_Bit0_L
+    74 00:C6D6: 05            	CLI
+    75 00:C6D7: 09            	RTS
+    76                        
+    77                        L_GotoReceiveData_Bit0_H:
+    78 00:C6D8: 73 EC         	LDA		R_Delay
+    79 00:C6DA: 56 02         	CMP		#2
+    80 00:C6DC: 10 15         	BCC		L_Fail
+    81 00:C6DE: 56 14         	CMP		#20
+    82 00:C6E0: 11 11         	BCS		L_Fail
+    83                        
+    84 00:C6E2: 53 00         	LDA		#0
+    85 00:C6E4: 7F EC         	STA		R_Delay
+    86                        L_Loop_Bit0_H:
+    87 00:C6E6: 73 07         	LDA		P_PC
+    88 00:C6E8: 51 20         	AND		#020H
+    89 00:C6EA: 13 09         	BEQ		L_GotoReceiveData_Bit1_L
+    90 00:C6EC: 15 95 C7      	JSR		Delay_50us
+    91 00:C6EF: 78 EC         	INC		R_Delay
+    92 00:C6F1: 12 F3         	BNE		L_Loop_Bit0_H
+    93                        L_Fail:
+    94 00:C6F3: 05            	CLI
+    95 00:C6F4: 09            	RTS
+    96                        
+    97                        L_GotoReceiveData_Bit1_L:
+    98 00:C6F5: 73 EC         	LDA		R_Delay
+    99 00:C6F7: 56 05         	CMP		#5
+   100 00:C6F9: 10 F8         	BCC		L_Fail
+   101 00:C6FB: 56 28         	CMP		#40
+   102 00:C6FD: 11 F4         	BCS		L_Fail
+   103 00:C6FF: 56 0E         	CMP		#14	;750uS
+   104 00:C701: 10 02         	BCC		L_Continue_GotoReceiveData_Bit1_L
+   105 00:C703: 78 ED         	INC		R_BatGrade
+   106                        L_Continue_GotoReceiveData_Bit1_L:
+   107 00:C705: 53 00         	LDA		#0
+   108 00:C707: 7F EC         	STA		R_Delay
+   109                        L_Loop_Bit1_L:
+   110 00:C709: 73 07         	LDA		P_PC
+   111 00:C70B: 51 20         	AND		#020H
+   112 00:C70D: 12 09         	BNE		L_GotoReceiveData_Bit1_H
+   113 00:C70F: 15 95 C7      	JSR		Delay_50us
+   114 00:C712: 78 EC         	INC		R_Delay
+   115 00:C714: 12 F3         	BNE		L_Loop_Bit1_L
+   116 00:C716: 17 DB         	BRA		L_Fail
+   117                        
+   118                        L_GotoReceiveData_Bit1_H:
+   119 00:C718: 73 EC         	LDA		R_Delay
+   120 00:C71A: 56 02         	CMP		#2
+   121 00:C71C: 10 D5         	BCC		L_Fail
+   122 00:C71E: 56 14         	CMP		#20
+   123 00:C720: 11 D1         	BCS		L_Fail
+   124                        
+   125 00:C722: 53 00         	LDA		#0
+   126 00:C724: 7F EC         	STA		R_Delay
+   127                        L_Loop_Bit1_H:
+   128 00:C726: 73 07         	LDA		P_PC
+   129 00:C728: 51 20         	AND		#020H
+   130 00:C72A: 13 09         	BEQ		L_GotoReceiveData_Bit2_L
+   131 00:C72C: 15 95 C7      	JSR		Delay_50us
+   132 00:C72F: 78 EC         	INC		R_Delay
+   133 00:C731: 12 F3         	BNE		L_Loop_Bit1_H
+   134 00:C733: 17 BE         	BRA		L_Fail
+   135                        
+   136                        L_GotoReceiveData_Bit2_L:
+   137 00:C735: 73 EC         	LDA		R_Delay
+   138 00:C737: 56 05         	CMP		#5
+   139 00:C739: 10 B8         	BCC		L_Fail
+   140 00:C73B: 56 28         	CMP		#40
+   141 00:C73D: 11 B4         	BCS		L_Fail
+   142 00:C73F: 56 0E         	CMP		#14	;750uS
+   143 00:C741: 10 04         	BCC		L_Continue_GotoReceiveData_Bit2_L
+   144 00:C743: 78 ED         	INC		R_BatGrade
+   145 00:C745: 78 ED         	INC		R_BatGrade
+   146                        L_Continue_GotoReceiveData_Bit2_L:
+   147 00:C747: 53 00         	LDA		#0
+   148 00:C749: 7F EC         	STA		R_Delay
+   149                        L_Loop_Bit2_L:
+   150 00:C74B: 73 07         	LDA		P_PC
+   151 00:C74D: 51 20         	AND		#020H
+   152 00:C74F: 12 09         	BNE		L_GotoReceiveData_Bit2_H
+   153 00:C751: 15 95 C7      	JSR		Delay_50us
+   154 00:C754: 78 EC         	INC		R_Delay
+   155 00:C756: 12 F3         	BNE		L_Loop_Bit2_L
+   156 00:C758: 17 99         	BRA		L_Fail
+   157                        
+   158                        L_GotoReceiveData_Bit2_H:
+   159 00:C75A: 73 EC         	LDA		R_Delay
+   160 00:C75C: 56 02         	CMP		#2
+   161 00:C75E: 10 93         	BCC		L_Fail
+   162 00:C760: 56 14         	CMP		#20
+   163 00:C762: 11 8F         	BCS		L_Fail
+   164                        
+   165 00:C764: 53 00         	LDA		#0
+   166 00:C766: 7F EC         	STA		R_Delay
+   167                        L_Loop_Bit2_H:
+   168 00:C768: 73 07         	LDA		P_PC
+   169 00:C76A: 51 20         	AND		#020H
+   170 00:C76C: 13 0A         	BEQ		L_GotoReceiveData_Bit3_L
+   171 00:C76E: 15 95 C7      	JSR		Delay_50us
+   172 00:C771: 78 EC         	INC		R_Delay
+   173 00:C773: 12 F3         	BNE		L_Loop_Bit2_H
+   174 00:C775: 16 F3 C6      	JMP		L_Fail
+   175                        
+   176                        L_GotoReceiveData_Bit3_L:
+   177 00:C778: 73 EC         	LDA		R_Delay
+   178 00:C77A: 56 05         	CMP		#5
+   179 00:C77C: 10 14         	BCC		L_Fail_
+   180 00:C77E: 56 28         	CMP		#40
+   181 00:C780: 11 10         	BCS		L_Fail_
+   182 00:C782: 56 0E         	CMP		#14	;750uS
+   183 00:C784: 10 08         	BCC		L_Continue_GotoReceiveData_Bit3_L
+   184 00:C786: 78 ED         	INC		R_BatGrade
+   185 00:C788: 78 ED         	INC		R_BatGrade
+   186 00:C78A: 78 ED         	INC		R_BatGrade
+   187 00:C78C: 78 ED         	INC		R_BatGrade
+   188                        L_Continue_GotoReceiveData_Bit3_L:
+   189 00:C78E: 73 ED         	LDA		R_BatGrade
+   190 00:C790: 7F EE         	STA		R_Bat_Data
+   191                        	; JSR		L_Judge_LowBat
+   192                        L_Fail_:
+   193 00:C792: 16 F3 C6      	JMP		L_Fail
+   194                        
+   195                        
+   196                        
+   197                        
+   198                        ; L_Judge_LowBat:
+   199                        ; 	LDA		Sys_Flag_C
+   200                        ; 	AND		#BIT1
+   201                        ; 	BNE		L_EndJudgeLowBat
+   202                        ; 	LDA		R_Bat_Data
+   203                        ; 	CMP		#1
+   204                        ; 	BCS		L_EndJudgeLowBat
+   205                        ; 	INC		R_LowBatTime
+   206                        ; L_EndJudgeLowBat:
+   207                        ; 	RTS
+   208                        
+   209                        
+   210                        
+   211                        Delay_50us:
+   212 00:C795: 53 F5         	LDA		#0F5H
+   213 00:C797: 7F CE         	STA		P_Temp
+   214                        ?LOOP:
+   215 00:C799: 78 CE         	INC		P_Temp
+   216 00:C79B: 12 FC         	BNE		?LOOP
+   217 00:C79D: 09            	RTS
+   218                        Delay_1ms:
+   219 00:C79E: 53 07         	LDA		#007H
+   220 00:C7A0: 7F CE         	STA		P_Temp
+   221                        ?LOOP:
+   222 00:C7A2: 78 CE         	INC		P_Temp
+   223 00:C7A4: 12 FC         	BNE		?LOOP
+   224 00:C7A6: 09            	RTS
+   225                        
+   226                        
+   227                        
+   228                        
+   229                        
+   230                        
+   231                        
+   232                        
+   233                        
+   234                        
+   234                        
+   202                        .INCLUDE	Delay.asm
      1                        ;============================================================
      2                        L_ScanKey_Delay_Prog:    ;延时功能
-     3 00:C67C: 53 E0         	LDA		#$E0
-     4 00:C67E: 7F CE         	STA		P_Temp
+     3 00:C7A7: 53 E0         	LDA		#$E0
+     4 00:C7A9: 7F CE         	STA		P_Temp
      5                        L_Loop_ScanKey_Delay:
-     6 00:C680: 78 CE         	INC		P_Temp
-     7 00:C682: 73 CE         	LDA		P_Temp
-     8 00:C684: 12 FA         	BNE		L_Loop_ScanKey_Delay
-     9 00:C686: 09            	RTS
+     6 00:C7AB: 78 CE         	INC		P_Temp
+     7 00:C7AD: 73 CE         	LDA		P_Temp
+     8 00:C7AF: 12 FA         	BNE		L_Loop_ScanKey_Delay
+     9 00:C7B1: 09            	RTS
     10                        L_Beep_1s:    ;响一声
-    11 00:C687: 35 A0 07      	BBR5	Sys_Flag_B,L_Beep_1s_RTS
+    11 00:C7B2: 35 A0 07      	BBR5	Sys_Flag_B,L_Beep_1s_RTS
     12                        L_Beep_1s_Usually:
-    13 00:C68A: 53 01         	LDA		#1
-    14 00:C68C: 4F 83 18      	STA		R_Voice_Unit
+    13 00:C7B5: 53 01         	LDA		#1
+    14 00:C7B7: 4F 83 18      	STA		R_Voice_Unit
     15                        	EN_LCD_IRQ
-+   15 00:C68F: 2E 0E          SMB6 IER
++   15 00:C7BA: 2E 0E          SMB6 IER
     16                        L_Beep_1s_RTS
-    17 00:C691: 09            	RTS
+    17 00:C7BC: 09            	RTS
     17                        
-   201                        
-   202                        ;--------------------------------------------------------
-   203                        ;***********************************************************************
-   204 00:C692: FF FF FF FF   	.BLKB	$FFFF-$,$FF
-   204 00:C692: FF FF FF FF   
-   204 00:C692: FF FF FF FF   
-   205                        
-   206                        	.ORG	0FFF8H
+   203                        
+   204                        ;--------------------------------------------------------
+   205                        ;***********************************************************************
+   206 00:C7BD: FF FF FF FF   	.BLKB	$FFFF-$,$FF
+   206 00:C7BD: FF FF FF FF   
+   206 00:C7BD: FF FF FF FF   
    207                        
-   208 00:FFF8: D5            	DB		11010101B	;
-   209                        ; bit0 	=0
-   210                        ; bit1	=0
-   211                        ; bit2 	=0当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
-   212                        ; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入下拉和三态
-   213                        ; bit4 	=0
-   214                        ; bit5 	=0
-   215                        ; bit6	=0VDD=1.5V,1 VDD=3V
-   216                        ; bit7	=0做复位，1做PA7口
-   217 00:FFF9: FF            	DB		11111111B	;
-   218                        
-   219                        ;***********************************************************************
-   220                        	.ORG	0FFFCH
-   221 00:FFFC: 00 C0         	DW		V_RESET
-   222 00:FFFE: F1 C0         	DW		V_IRQ
-   223                        
-   224                        	.ENDS
-   225                        	.END
+   208                        	.ORG	0FFF8H
+   209                        
+   210 00:FFF8: D5            	DB		11010101B	;
+   211                        ; bit0 	=0
+   212                        ; bit1	=0
+   213                        ; bit2 	=0当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
+   214                        ; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入下拉和三态
+   215                        ; bit4 	=0
+   216                        ; bit5 	=0
+   217                        ; bit6	=0VDD=1.5V,1 VDD=3V
+   218                        ; bit7	=0做复位，1做PA7口
+   219 00:FFF9: FF            	DB		11111111B	;
+   220                        
+   221                        ;***********************************************************************
+   222                        	.ORG	0FFFCH
+   223 00:FFFC: 00 C0         	DW		V_RESET
+   224 00:FFFE: F1 C0         	DW		V_IRQ
+   225                        
+   226                        	.ENDS
+   227                        	.END
 
  --------------------
       Warnings:0
