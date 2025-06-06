@@ -1,0 +1,270 @@
+    db_c_y	c0,s7	;;1A
+	db_c_y	c2,s7	;;1B
+	db_c_y	c5,s7	;;1C
+	db_c_y	c6,s7	;;1D
+	db_c_y	c4,s7	;;1E
+	db_c_y	c1,s7	;;1F
+	db_c_y	c3,s7	;;1G
+
+
+	db_c_y	c0,s8	;;2A
+	db_c_y	c2,s8	;;2B
+	db_c_y	c5,s8	;;2C
+	db_c_y	c6,s8	;;2D
+	db_c_y	c4,s8	;;2E
+	db_c_y	c1,s8	;;2F
+	db_c_y	c3,s8	;;2G
+
+
+	db_c_y	c0,s9	;;3A
+	db_c_y	c2,s9	;;3B
+	db_c_y	c5,s9	;;3C
+	db_c_y	c6,s9	;;3D
+	db_c_y	c4,s9	;;3E
+	db_c_y	c1,s9	;;3F
+	db_c_y	c3,s9	;;3G
+
+
+	db_c_y	c0,s10	;;4A
+	db_c_y	c2,s10	;;4B
+	db_c_y	c5,s10	;;4C
+	db_c_y	c6,s10	;;4D
+	db_c_y	c4,s10	;;4E
+	db_c_y	c1,s10	;;4F
+	db_c_y	c3,s10	;;4G
+
+
+	db_c_y	c0,s11	;;5A
+	db_c_y	c2,s11	;;5B
+	db_c_y	c5,s11	;;5C
+	db_c_y	c6,s11	;;5D
+	db_c_y	c4,s11	;;5E
+	db_c_y	c1,s11	;;5F
+	db_c_y	c3,s11	;;5G
+
+
+	db_c_y	c0,s20	;;6A
+	db_c_y	c2,s20	;;6B
+	db_c_y	c5,s20	;;6C
+	db_c_y	c6,s20	;;6D
+	db_c_y	c4,s20	;;6E
+	db_c_y	c1,s20	;;6F
+	db_c_y	c3,s20	;;6G
+
+
+	db_c_y	c0,s22	;;7A
+	db_c_y	c2,s22	;;7B
+	db_c_y	c5,s22	;;7C
+	db_c_y	c6,s22	;;7D
+	db_c_y	c4,s22	;;7E
+	db_c_y	c1,s22	;;7F
+	db_c_y	c3,s22	;;7G
+
+
+	db_c_y	c0,s23	;;8A
+	db_c_y	c2,s23	;;8B
+	db_c_y	c5,s23	;;8C
+	db_c_y	c6,s23	;;8D
+	db_c_y	c4,s23	;;8E
+	db_c_y	c1,s23	;;8F
+	db_c_y	c3,s23	;;8G
+
+
+	db_c_y	c7,s35	;;14A
+	db_c_y	c5,s35	;;14B
+	db_c_y	c2,s35	;;14C
+	db_c_y	c1,s35	;;14D
+	db_c_y	c3,s35	;;14E
+	db_c_y	c6,s35	;;14F
+	db_c_y	c4,s35	;;14G
+
+
+	db_c_y	c7,s36	;;15A
+	db_c_y	c5,s36	;;15B
+	db_c_y	c2,s36	;;15C
+	db_c_y	c1,s36	;;15D
+	db_c_y	c3,s36	;;15E
+	db_c_y	c6,s36	;;15F
+	db_c_y	c4,s36	;;15G
+
+
+	db_c_y	c7,s37	;;16A
+	db_c_y	c5,s37	;;16B
+	db_c_y	c2,s37	;;16C
+	db_c_y	c1,s37	;;16D
+	db_c_y	c3,s37	;;16E
+	db_c_y	c6,s37	;;16F
+	db_c_y	c4,s37	;;16G
+
+
+	db_c_y	c7,s38	;;17A
+	db_c_y	c5,s38	;;17B
+	db_c_y	c2,s38	;;17C
+	db_c_y	c1,s38	;;17D
+	db_c_y	c3,s38	;;17E
+	db_c_y	c6,s38	;;17F
+	db_c_y	c4,s38	;;17G
+
+
+	db_c_y	c1,s24	;;18A
+	db_c_y	c3,s24	;;18B
+	db_c_y	c6,s24	;;18C
+	db_c_y	c7,s24	;;18D
+	db_c_y	c5,s24	;;18E
+	db_c_y	c2,s24	;;18F
+	db_c_y	c4,s24	;;18G
+
+
+	db_c_y	c1,s25	;;19A
+	db_c_y	c3,s25	;;19B
+	db_c_y	c6,s25	;;19C
+	db_c_y	c7,s25	;;19D
+	db_c_y	c5,s25	;;19E
+	db_c_y	c2,s25	;;19F
+	db_c_y	c4,s25	;;19G
+
+
+	db_c_y	c1,s26	;;20A
+	db_c_y	c3,s26	;;20B
+	db_c_y	c6,s26	;;20C
+	db_c_y	c7,s26	;;20D
+	db_c_y	c5,s26	;;20E
+	db_c_y	c2,s26	;;20F
+	db_c_y	c4,s26	;;20G
+
+
+	db_c_y	c1,s27	;;21A
+	db_c_y	c3,s27	;;21B
+	db_c_y	c6,s27	;;21C
+	db_c_y	c7,s27	;;21D
+	db_c_y	c5,s27	;;21E
+	db_c_y	c2,s27	;;21F
+	db_c_y	c4,s27	;;21G
+
+
+
+	db_c_y	c0,s24	;;S0
+	db_c_y	c5,s21	;;S1
+	db_c_y	c6,s21	;;S2
+	db_c_y	c7,s21	;;S3
+	db_c_y	c7,s28	;;S4
+
+	db_c_y	c6,s28	;;S5
+	db_c_y	c5,s28	;;S6
+	db_c_y	c4,s28	;;S7
+	db_c_y	c3,s28	;;S8
+	db_c_y	c2,s28	;;S9
+
+
+	db_c_y	c1,s28	;;S10
+	db_c_y	c0,s28	;;S11
+	db_c_y	c0,s29	;;S12
+	db_c_y	c1,s29	;;S13
+	db_c_y	c2,s29	;;S14
+
+
+	db_c_y	c3,s29	;;S15
+	db_c_y	c4,s29	;;S16
+	db_c_y	c5,s29	;;S17
+	db_c_y	c6,s29	;;S18
+	db_c_y	c7,s29	;;S19
+
+
+	db_c_y	c7,s30	;;S20
+	db_c_y	c6,s30	;;S21
+	db_c_y	c5,s30	;;S22
+	db_c_y	c4,s30	;;S23
+	db_c_y	c3,s30	;;S24
+
+
+	db_c_y	c2,s30	;;S25
+	db_c_y	c1,s30	;;S26
+	db_c_y	c0,s30	;;S27
+	db_c_y	c0,s31	;;S28
+	db_c_y	c1,s31	;;S29
+
+
+	db_c_y	c2,s31	;;S30
+	db_c_y	c3,s31	;;S31
+	db_c_y	c4,s31	;;S32
+	db_c_y	c5,s31	;;S33
+	db_c_y	c6,s31	;;S34
+
+
+	db_c_y	c7,s31	;;S35
+	db_c_y	c7,s32	;;S36
+	db_c_y	c6,s32	;;S37
+	db_c_y	c5,s32	;;S38
+	db_c_y	c4,s32	;;S39
+
+
+	db_c_y	c3,s32	;;S40
+	db_c_y	c2,s32	;;S41
+	db_c_y	c1,s32	;;S42
+	db_c_y	c0,s32	;;S43
+	db_c_y	c0,s33	;;S44
+
+
+	db_c_y	c1,s33	;;S45
+	db_c_y	c2,s33	;;S46
+	db_c_y	c3,s33	;;S47
+	db_c_y	c4,s33	;;S48
+	db_c_y	c5,s33	;;S49
+
+
+	db_c_y	c6,s33	;;S50
+	db_c_y	c7,s33	;;S51
+	db_c_y	c7,s34	;;S52
+	db_c_y	c6,s34	;;S53
+	db_c_y	c5,s34	;;S54
+
+
+	db_c_y	c4,s34	;;S55
+	db_c_y	c3,s34	;;S56
+	db_c_y	c2,s34	;;S57
+	db_c_y	c1,s34	;;S58
+	db_c_y	c0,s34	;;S59
+	db_c_y	c0,s25	;;S60
+	
+
+	db_c_y	c7,s20	;;X1
+	db_c_y	c7,s22	;;X2
+	db_c_y	c0,s37	;;X3
+	db_c_y	c0,s38	;;X4
+	db_c_y	c3,s39	;;X5
+
+	db_c_y	c2,s39	;;X6
+	db_c_y	c1,s39	;;X7
+	db_c_y	c0,s39	;;X8
+	db_c_y	c0,s35	;;X9
+	db_c_y	c4,s39	;;X10
+
+	db_c_y	c5,s39	;;X11
+	db_c_y	c6,s39	;;X12
+	db_c_y	c7,s39	;;X13
+
+
+	db_c_y	c0,s21	;;T1
+	db_c_y	c4,s21	;;T2
+	db_c_y	c3,s21	;;T3
+	db_c_y	c2,s21	;;T4
+	db_c_y	c1,s21	;;T5
+1
+	db_c_y	c7,s8	;;T6
+	db_c_y	c7,s9	;;T7
+	db_c_y	c7,s7	;;T8
+
+
+	db_c_y	c0,s36	;;P1
+	db_c_y	c0,s26	;;P2
+	db_c_y	c0,s27	;;P3
+
+
+	db_c_y	c7,s10	;;AM
+
+
+	db_c_y	c7,s11	;;PM
+
+
+	db_c_y	c7,s23	;;C
+

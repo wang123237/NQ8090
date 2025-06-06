@@ -31,7 +31,7 @@ V_RESET:
 	NOP
 	LDX		#STACK_BOT  
 	TXS	      ;使用这个值初始化堆栈指针，这通常是为了设置堆栈的底部地址，确保程序运行中堆栈的正确使用。
-	LDA		#$B7	;#$07    
+	LDA		#$37	;#$07    
 	STA		SYSCLK	;设置系统时钟
 	LDA		FUSE
 	STA		MF	;精准主频3.64M
@@ -68,7 +68,7 @@ V_RESET:
 	PB3_PB3_NOMS
 
 	PC67_SEG
-	PC45_SEG
+	; PC45_SEG
 	PD03_SEG
 	PD47_PD47
 
@@ -88,25 +88,29 @@ V_RESET:
 	LDA		#$07		;#$07    系统时钟和中断使能
 	STA		SYSCLK		;Strong
 	CLI
-	
+	JSR		L_Clr_All_DisRam_Prog
 ;***********************************************************************
 ;***********************************************************************
 MainLoop:	
-
+	JSR		L_Display_Timer_TurnPlate_Prog
+	INC		R_Timer_Min
+	LDX		#lcd_d1
+	LDA		#5
+	JSR		L_Dis_8Bit_DigitDot_Prog
 	; JSR		L_Update_Timer_Ms_Prog
 	; JSR		L_LCD_IRQ_WorkProg
 	; JSR		L_Half_Second_Prog
-	LDA		R_Voice_Unit
-	BNE		MainLoop
+	; LDA		R_Voice_Unit
+	; BNE		MainLoop
 
 
-	Fsys_500k
+	; Fsys_500k
 	
-	NOP
-	NOP
-	NOP
-	STA		P_HALT
-	Fsys_2MHZ
+	; NOP
+	; NOP
+	; NOP
+	; STA		P_HALT
+	; Fsys_2MHZ
 
 	BRA		MainLoop		
 
@@ -172,12 +176,13 @@ L_EndIrq:
 ; 
 ; 
 ; 
-; .INCLUDE	Display\Disp.asm
-; .INCLUDE	Display\Lcdtab.asm
+.INCLUDE	Display\Disp.asm
+.INCLUDE	Display\Lcdtab.asm
 ; .INCLUDE	Display\Display.asm
 ; .INCLUDE	Display\Display_Time.asm
 ; .INCLUDE	Display\Display_Alarm.asm
-; .INCLUDE	Display\Display_Symbol.asm
+.INCLUDE	Display\Display_Timer.asm
+.INCLUDE	Display\Display_Timer_Symbol.asm
 ; .INCLUDE	Display\Display_Normal.asm
 .INCLUDE	Display\Tool.asm
 ; 
@@ -207,15 +212,15 @@ L_EndIrq:
 	
 	.ORG	0FFF8H
 	
-	DB		11010101B	;
-; bit0 	=0
-; bit1	=0
-; bit2 	=0当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
-; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入下拉和三态
-; bit4 	=0
-; bit5 	=0
-; bit6	=0VDD=1.5V,1 VDD=3V
-; bit7	=0做复位，1做PA7口
+	DB		11110111B	;
+; bit0 	=0	主振荡器选择
+; bit1	=	1
+; bit2 	=0	当PA7做复位时，只能写1低电平有效，高电平有效烧录会报错
+; bit3	=0PA口做输入下拉和输入上拉，1PA口做输入上拉和三态
+; bit4 	=0	ROM0
+; bit5 	=0 	ROM1 00 保留，01，4KB,10,8KB,11,16KB
+; bit6	=0 	
+; bit7	=0做复位，1做PA3口
 	DB		11111111B	;
 
 ;***********************************************************************

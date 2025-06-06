@@ -16,8 +16,8 @@ RAM					EQU		80H
 	ORG	0080H
 
 Page0RamStarAddr	EQU		$	
-LCDRAM					DS	6*5
-D_LCD_RAM				EQU	6*5
+LCDRAM					DS	8*5
+D_LCD_RAM				EQU	8*5
 
 R_Int_Backup			DS	1
 
@@ -113,8 +113,10 @@ Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
 Timer_TurnPlate_Frequeny		DS	1;转盘数
 
 
-R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
+R_Alarm_Open					DS	1	;判断闹钟是否开启
+R_Alarm_Beep					DS	1	;判断那个闹钟
 
+R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
 R_Alarm_Clock_Hr				DS	5
 R_Alarm_Clock_Min				DS	5
 R_Snz_Time						DS	5
