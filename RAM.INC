@@ -67,6 +67,10 @@ Sys_Flag_E				DS	1	 ;编码器必备标志
 ; bit6	=	
 ; bit7	=
 
+Sys_Flag_F				DS	1		;判断闹钟是否打开
+Sys_Flag_H				DS	1		;判断哪个闹钟响闹
+
+
 R_Reset_Time					DS	1;全显时间,一般为2s
 	
 R_Scankey_Time					DS	1;按键按下的时间
@@ -106,11 +110,11 @@ R_Time_Week						DS	1;0是星期天，1是星期一---
 R_Timer_Sec						DS	1;定时器显示时间/正计时时间秒数
 R_Timer_Min						DS	1;定时器显示时间/正计时时间分钟
 R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
-Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
-Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
-Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
-Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
-Timer_TurnPlate_Frequeny		DS	1;转盘数
+; Timer_TurnPlate_Min				DS	1;转盘每一个分段对应时间
+; Timer_TurnPlate_Sec				DS	1;转盘每一个分段对应时间
+; Timer_TurnPlate_Min_Backup		DS	1;转盘每一个分段对应时间
+; Timer_TurnPlate_Sec_Backup		DS	1;转盘每一个分段对应时间
+; Timer_TurnPlate_Frequeny		DS	1;转盘数
 
 
 R_Alarm_Open					DS	1	;判断闹钟是否开启

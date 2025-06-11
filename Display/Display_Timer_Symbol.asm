@@ -1,3 +1,66 @@
+
+L_Clr_All_TurnPlate_Prog:
+    LDA     #0
+    STA     P_Temp
+    JSR     L_Clr_S60_Prog
+L_Clr_All_TurnPlate_Prog_Loop:
+    LDA     P_Temp
+    CMP     #60
+    BCS     L_Display_TurnPlate_Prog_Timer_Backup_RTS
+    JSR     L_Clr_All_TurnPlate_Prog_1
+    INC     P_Temp
+    BRA     L_Clr_All_TurnPlate_Prog_Loop
+L_Clr_All_TurnPlate_Prog_1:
+    LDA     P_Temp
+    CLC
+    CLD
+    ROL
+    TAX
+    LDA     Table_TurnPlate_Clr+1,X
+    PHA
+    LDA     Table_TurnPlate_Clr,X
+    PHA
+L_Display_TurnPlate_Prog_Timer_Backup_RTS:
+    RTS
+;-----------------------------------------
+L_Display_TurnPlate_Prog_Timer_Backup:
+    LDA     #0
+    STA     P_Temp
+    LDA     R_Timer_Min_Backup
+    BEQ     L_Display_TurnPlate_Prog_Timer_Backup_RTS
+    JSR     L_DToHx_Prog
+    INC
+    STA     P_Temp+1
+    JSR     L_Display_S60_Prog
+
+L_Display_TurnPlate_Prog_Timer_Backup_Loop:
+    LDA     P_Temp
+    CMP     P_Temp+1
+    BCS     L_Display_TurnPlate_Prog_Timer_Backup_RTS
+    JSR     L_Display_TurnPlate_Prog_Timer_Backup_1
+    INC     P_Temp
+    BRA     L_Display_TurnPlate_Prog_Timer_Backup_Loop
+
+
+
+L_Display_TurnPlate_Prog_Timer_Backup_1:
+    CLC
+    ClD
+    LDA     P_Temp
+    ROL
+    TAX
+    LDA     Table_TurnPlate_Display+1,X
+    PHA
+    LDA     Table_TurnPlate_Display,X
+    PHA
+    RTS
+
+
+
+
+
+
+;================================================
 L_Display_S0_Prog:
     LDX     #lcd_S0
     JMP     F_DispSymbol
@@ -44,142 +107,142 @@ L_Display_S14_Prog:
     LDX     #lcd_S14
     JMP     F_DispSymbol
 L_Display_S15_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S15
     JMP     F_DispSymbol
 L_Display_S16_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S16
     JMP     F_DispSymbol
 L_Display_S17_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S17
     JMP     F_DispSymbol
 L_Display_S18_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S18
     JMP     F_DispSymbol
 L_Display_S19_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S19
     JMP     F_DispSymbol
 L_Display_S20_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S20
     JMP     F_DispSymbol
 L_Display_S21_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S21
     JMP     F_DispSymbol
 L_Display_S22_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S22
     JMP     F_DispSymbol    
 L_Display_S23_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S23
     JMP     F_DispSymbol    
 L_Display_S24_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S24
     JMP     F_DispSymbol
 L_Display_S25_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S25
     JMP     F_DispSymbol
 L_Display_S26_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S26
     JMP     F_DispSymbol
 L_Display_S27_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S27
     JMP     F_DispSymbol
 L_Display_S28_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S28
     JMP     F_DispSymbol
 L_Display_S29_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S29
     JMP     F_DispSymbol
 L_Display_S30_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S30
     JMP     F_DispSymbol
 L_Display_S31_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S31
     JMP     F_DispSymbol
 L_Display_S32_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S32
     JMP     F_DispSymbol    
 L_Display_S33_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S33
     JMP     F_DispSymbol    
 L_Display_S34_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S34
     JMP     F_DispSymbol
 L_Display_S35_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S35
     JMP     F_DispSymbol
 L_Display_S36_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S36
     JMP     F_DispSymbol
 L_Display_S37_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S37
     JMP     F_DispSymbol
 L_Display_S38_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S38
     JMP     F_DispSymbol
 L_Display_S39_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S39
     JMP     F_DispSymbol
 L_Display_S40_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S40
     JMP     F_DispSymbol
 L_Display_S41_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S41
     JMP     F_DispSymbol
 L_Display_S42_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S42
     JMP     F_DispSymbol    
 L_Display_S43_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S43
     JMP     F_DispSymbol    
 L_Display_S44_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S44
     JMP     F_DispSymbol
 L_Display_S45_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S45
     JMP     F_DispSymbol
 L_Display_S46_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S46
     JMP     F_DispSymbol
 L_Display_S47_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S47
     JMP     F_DispSymbol
 L_Display_S48_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S48
     JMP     F_DispSymbol
 L_Display_S49_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S49
     JMP     F_DispSymbol
 L_Display_S50_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S50
     JMP     F_DispSymbol
 L_Display_S51_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S51
     JMP     F_DispSymbol
 L_Display_S52_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S52
     JMP     F_DispSymbol    
 L_Display_S53_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S53
     JMP     F_DispSymbol    
 L_Display_S54_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S54
     JMP     F_DispSymbol
 L_Display_S55_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S55
     JMP     F_DispSymbol
 L_Display_S56_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S56
     JMP     F_DispSymbol
 L_Display_S57_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S57
     JMP     F_DispSymbol
 L_Display_S58_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S58
     JMP     F_DispSymbol
 L_Display_S59_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S59
     JMP     F_DispSymbol
 L_Display_S60_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S60
     JMP     F_DispSymbol
 ;=============================================
 L_Clr_S0_Prog:
@@ -216,154 +279,154 @@ L_Clr_S10_Prog:
     LDX     #lcd_S10
     JMP     F_ClrpSymbol
 L_Clr_S11_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S11
     JMP     F_ClrpSymbol
 L_Clr_S12_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S12
     JMP     F_ClrpSymbol    
 L_Clr_S13_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S13
     JMP     F_ClrpSymbol    
 L_Clr_S14_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S14
     JMP     F_ClrpSymbol
 L_Clr_S15_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S15
     JMP     F_ClrpSymbol
 L_Clr_S16_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S16
     JMP     F_ClrpSymbol
 L_Clr_S17_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S17
     JMP     F_ClrpSymbol
 L_Clr_S18_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S18
     JMP     F_ClrpSymbol
 L_Clr_S19_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S19
     JMP     F_ClrpSymbol
 L_Clr_S20_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S20
     JMP     F_ClrpSymbol
 L_Clr_S21_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S21
     JMP     F_ClrpSymbol
 L_Clr_S22_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S22
     JMP     F_ClrpSymbol    
 L_Clr_S23_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S23
     JMP     F_ClrpSymbol    
 L_Clr_S24_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S24
     JMP     F_ClrpSymbol
 L_Clr_S25_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S25
     JMP     F_ClrpSymbol
 L_Clr_S26_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S26
     JMP     F_ClrpSymbol
 L_Clr_S27_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S27
     JMP     F_ClrpSymbol
 L_Clr_S28_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S28
     JMP     F_ClrpSymbol
 L_Clr_S29_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S29
     JMP     F_ClrpSymbol
 L_Clr_S30_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S30
     JMP     F_ClrpSymbol
 L_Clr_S31_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S31
     JMP     F_ClrpSymbol
 L_Clr_S32_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S32
     JMP     F_ClrpSymbol    
 L_Clr_S33_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S33
     JMP     F_ClrpSymbol    
 L_Clr_S34_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S34
     JMP     F_ClrpSymbol
 L_Clr_S35_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S35
     JMP     F_ClrpSymbol
 L_Clr_S36_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S36
     JMP     F_ClrpSymbol
 L_Clr_S37_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S37
     JMP     F_ClrpSymbol
 L_Clr_S38_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S38
     JMP     F_ClrpSymbol
 L_Clr_S39_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S39
     JMP     F_ClrpSymbol
 L_Clr_S40_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S40
     JMP     F_ClrpSymbol
 L_Clr_S41_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S41
     JMP     F_ClrpSymbol
 L_Clr_S42_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S42
     JMP     F_ClrpSymbol    
 L_Clr_S43_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S43
     JMP     F_ClrpSymbol    
 L_Clr_S44_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S44
     JMP     F_ClrpSymbol
 L_Clr_S45_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S45
     JMP     F_ClrpSymbol
 L_Clr_S46_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S46
     JMP     F_ClrpSymbol
 L_Clr_S47_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S47
     JMP     F_ClrpSymbol
 L_Clr_S48_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S48
     JMP     F_ClrpSymbol
 L_Clr_S49_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S49
     JMP     F_ClrpSymbol
 L_Clr_S50_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S50
     JMP     F_ClrpSymbol
 L_Clr_S51_Prog:
-    LDX     #lcd_S1
+    LDX     #lcd_S51
     JMP     F_ClrpSymbol
 L_Clr_S52_Prog:
-    LDX     #lcd_S2
+    LDX     #lcd_S52
     JMP     F_ClrpSymbol    
 L_Clr_S53_Prog:
-    LDX     #lcd_S3
+    LDX     #lcd_S53
     JMP     F_ClrpSymbol    
 L_Clr_S54_Prog:
-    LDX     #lcd_S4
+    LDX     #lcd_S54
     JMP     F_ClrpSymbol
 L_Clr_S55_Prog:
-    LDX     #lcd_S5
+    LDX     #lcd_S55
     JMP     F_ClrpSymbol
 L_Clr_S56_Prog:
-    LDX     #lcd_S6
+    LDX     #lcd_S56
     JMP     F_ClrpSymbol
 L_Clr_S57_Prog:
-    LDX     #lcd_S7
+    LDX     #lcd_S57
     JMP     F_ClrpSymbol
 L_Clr_S58_Prog:
-    LDX     #lcd_S8
+    LDX     #lcd_S58
     JMP     F_ClrpSymbol
 L_Clr_S59_Prog:
-    LDX     #lcd_S9
+    LDX     #lcd_S59
     JMP     F_ClrpSymbol
 L_Clr_S60_Prog:
-    LDX     #lcd_S10
+    LDX     #lcd_S60
     JMP     F_ClrpSymbol
 ;=================================================================
 ; L_Display_S0_Prog:
@@ -734,67 +797,68 @@ L_Clr_S60_Prog:
 ;     RMB7        $82
 ;     RTS
 
-L_Clr_All_TurnPlate_Prog:
+; L_Clr_All_TurnPlate_Prog:
     
-    RMB0        $83
-    RMB5        $9B
-    RMB5        $A0
-    RMB5        $A5
-    RMB4        $A6
-    RMB4        $A1
-    RMB4        $9C
-    RMB4        $97
-    RMB4        $92
-    RMB4        $8D
-    RMB4        $88
-    RMB4        $83
-    RMB5        $A6
-    RMB5        $A1
-    RMB5        $9C
-    RMB5        $97
-    RMB5        $92
-    RMB5        $8D
-    RMB5        $88
-    RMB5        $83
-    RMB6        $A6
-    RMB6        $A1
-    RMB6        $9C
-    RMB6        $97
-    RMB6        $92
-    RMB6        $8D
-    RMB6        $88
-    RMB6        $83
-    RMB7        $83
-    RMB7        $88
-    RMB7        $8D
-    RMB7        $92
-    RMB7        $97
-    RMB7        $9C
-    RMB7        $A1
-    RMB7        $A6
-    RMB0        $A7
-    RMB0        $A2
-    RMB0        $9D
-    RMB0        $98
-    RMB0        $93
-    RMB0        $8E
-    RMB0        $89
-    RMB0        $84
-    RMB1        $84
-    RMB1        $89
-    RMB1        $8E
-    RMB1        $93
-    RMB1        $98
-    RMB1        $9D
-    RMB1        $A2
-    RMB1        $A7
-    RMB2        $A7
-    RMB2        $A2
-    RMB2        $9D
-    RMB2        $98
-    RMB2        $93
-    RMB2        $8E
-    RMB2        $89
-    RMB2        $84
-    RMB7        $82
-    RTS
+;     RMB0        $83
+;     RMB5        $9B
+;     RMB5        $A0
+;     RMB5        $A5
+;     RMB4        $A6
+;     RMB4        $A1
+;     RMB4        $9C
+;     RMB4        $97
+;     RMB4        $92
+;     RMB4        $8D
+;     RMB4        $88
+;     RMB4        $83
+;     RMB5        $A6
+;     RMB5        $A1
+;     RMB5        $9C
+;     RMB5        $97
+;     RMB5        $92
+;     RMB5        $8D
+;     RMB5        $88
+;     RMB5        $83
+;     RMB6        $A6
+;     RMB6        $A1
+;     RMB6        $9C
+;     RMB6        $97
+;     RMB6        $92
+;     RMB6        $8D
+;     RMB6        $88
+;     RMB6        $83
+;     RMB7        $83
+;     RMB7        $88
+;     RMB7        $8D
+;     RMB7        $92
+;     RMB7        $97
+;     RMB7        $9C
+;     RMB7        $A1
+;     RMB7        $A6
+;     RMB0        $A7
+;     RMB0        $A2
+;     RMB0        $9D
+;     RMB0        $98
+;     RMB0        $93
+;     RMB0        $8E
+;     RMB0        $89
+;     RMB0        $84
+;     RMB1        $84
+;     RMB1        $89
+;     RMB1        $8E
+;     RMB1        $93
+;     RMB1        $98
+;     RMB1        $9D
+;     RMB1        $A2
+;     RMB1        $A7
+;     RMB2        $A7
+;     RMB2        $A2
+;     RMB2        $9D
+;     RMB2        $98
+;     RMB2        $93
+;     RMB2        $8E
+;     RMB2        $89
+;     RMB2        $84
+;     RMB7        $82
+;     RTS
+

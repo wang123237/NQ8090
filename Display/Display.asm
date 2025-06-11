@@ -1,43 +1,20 @@
-
-    
-
-
-L_Display_Time_Normal_Prog:
-	LDA		R_Time_Sec
-	BNE		L_Display_Alarm_Normal_Prog_OUT
-	JSR		L_Display_Time_Min_Prog
-	LDA		R_Time_Min
-	BNE		L_Display_Alarm_Normal_Prog_OUT
-	JSR		L_Display_Time_Hr_Prog
-	LDA		R_Time_Min
-	BNE		L_Display_Alarm_Normal_Prog_OUT
-	JSR		L_Clr_Time_Week_Prog
-	JMP		L_Display_Time_Week_Prog
-
-	
-		
-
-
-
-
-
-
-
-
-
-
 L_Display_Prog:
-	
-	JSR		L_Display_Time_Sec_Prog
-	JSR		L_Display_Time_Min_Prog
-	JSR		L_Display_Time_Hr_Prog
-	JSR		L_Display_Time_Month_Prog
-	JSR		L_Display_Time_Day_Prog
-	JSR		L_Display_Time_Week_Prog
-	RTS
+    LDA     R_Mode
+    BEQ     L_Display_Prog_Time_To
+    JMP     L_Display_Alarm_Prog
+L_Display_Prog_Time_To:
+    JMP     L_Display_Time_Prog
 
 
-
-
-
-
+L_Clr_Alarm_Prog:
+    JSR     L_Clr_lcd_Alarm_Clock_Prog_1
+    JSR     L_Clr_lcd_Alarm_Clock_Prog_2
+    JSR     L_Clr_lcd_Alarm_Clock_Prog_3
+    JSR     L_Clr_lcd_Alarm_Clock_Prog_5
+    JSR     L_Clr_lcd_Alarm_Clock_Prog_4
+    JSR     L_Clr_lcd_X10_Prog
+    JSR     L_Clr_lcd_X11_Prog
+    JSR     L_Clr_lcd_X12_Prog
+    JSR     L_Clr_lcd_X13_Prog
+    RTS
+    

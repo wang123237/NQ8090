@@ -92,25 +92,21 @@ V_RESET:
 ;***********************************************************************
 ;***********************************************************************
 MainLoop:	
-	JSR		L_Display_Timer_TurnPlate_Prog
-	INC		R_Timer_Min
-	LDX		#lcd_d1
-	LDA		#5
-	JSR		L_Dis_8Bit_DigitDot_Prog
+	
 	; JSR		L_Update_Timer_Ms_Prog
 	; JSR		L_LCD_IRQ_WorkProg
-	; JSR		L_Half_Second_Prog
-	; LDA		R_Voice_Unit
-	; BNE		MainLoop
+	JSR		L_Half_Second_Prog
+	LDA		R_Voice_Unit
+	BNE		MainLoop
 
 
-	; Fsys_500k
+	Fsys_500k
 	
-	; NOP
-	; NOP
-	; NOP
-	; STA		P_HALT
-	; Fsys_2MHZ
+	NOP
+	NOP
+	NOP
+	STA		P_HALT
+	Fsys_2MHZ
 
 	BRA		MainLoop		
 
@@ -176,22 +172,24 @@ L_EndIrq:
 ; 
 ; 
 ; 
-.INCLUDE	Display\Disp.asm
-.INCLUDE	Display\Lcdtab.asm
-; .INCLUDE	Display\Display.asm
-; .INCLUDE	Display\Display_Time.asm
-; .INCLUDE	Display\Display_Alarm.asm
+
+.INCLUDE	Display\Display.asm
+.INCLUDE	Display\Display_Time.asm
+.INCLUDE	Display\Display_Alarm_Clock.asm
 .INCLUDE	Display\Display_Timer.asm
 .INCLUDE	Display\Display_Timer_Symbol.asm
-; .INCLUDE	Display\Display_Normal.asm
+.INCLUDE	Display\Display_Symbol.asm
+
+
 .INCLUDE	Display\Tool.asm
+.INCLUDE	Display\Disp.asm
+.INCLUDE	Display\Lcdtab.asm 
 ; 
 ; 
 ; 
 ; 
 ; 
-; 
-; .INCLUDE	Half_s\Half.asm
+.INCLUDE	Half_s\Half.asm
 .INCLUDE	Half_s\Clock.asm
 ; .INCLUDE	Half_s\Alarm_Clock.asm
 ; .INCLUDE	Half_s\Common.asm

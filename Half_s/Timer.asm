@@ -15,8 +15,10 @@ L_Update_Timer_Sec_Prog_Desitive:
 	JMP     L_Dec_To_60_Prog
 ;====================================================
 
-
-
+L_Control_Timer_Prog
+    BBS4    Sys_Flag_D,L_Timer_Prog_OUT
+    BBR1    Sys_Flag_D,L_Timer_Prog_OU
+    BBS1    Sys_Flag_D,L_Desitive_Timer
 
 
 

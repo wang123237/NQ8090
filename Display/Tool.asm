@@ -1,4 +1,4 @@
-L_A_HexToHexD:
+L_A_HexToHexD:									;16进制转换为10进制数
 	STA		P_Temp								; 将十进制输入保存到 P_Temp
 	LDA		#0									; 初始化高位寄存器
 	STA		P_Temp+1							; 高位清零
@@ -59,7 +59,7 @@ L_DecToHex_End:
 ; 	BNE		L_A_HexDToHex_Loop
 ; 	LDA		P_Temp+2
 ; 	RTS
-L_DToHx_Prog:		;十进制转十六进制
+L_DToHx_Prog:								;十进制转十六进制
 	STA		P_Temp+6      
 	AND		#$F0
 	STA		P_Temp+7
@@ -82,37 +82,37 @@ L_End_DToHx_Prog:
 	RTS
 ;===========================================
 
-; L_12_24_Prog:;12小时和24小时切换
-; 	STA		P_Temp	
-; 	BBS2	Sys_Flag_B,L_12_24_Prog_5;判断是24小时制跳转退出
-; 	LDA		P_Temp
-; 	BEQ		L_12_24_Prog_1;为0是跳转
-; 	CMP		#11H
-; 	BEQ		L_12_24_Prog_4
-; 	BCS		L_12_24_Prog_3;比12大时跳转
-; L_12_24_Prog_4:
-; 	JSR		L_Dis_lcd_AM_Prog
-; 	JSR		L_Clr_lcd_PM_Prog
-; 	LDA		P_Temp
-; L_12_24_Prog_OUT:
-; 	RTS
-; L_12_24_Prog_1:;0点
-; 	JSR		L_Dis_lcd_AM_Prog
-; 	JSR		L_Clr_lcd_PM_Prog
-; 	LDA		#12H
-; 	RTS
-; L_12_24_Prog_3:
-; 	JSR		L_Clr_lcd_AM_Prog
-; 	JSR		L_Dis_lcd_PM_Prog
-; 	LDA		P_Temp
-; 	CMP		#12H
-; 	BEQ		L_12_24_Prog_OUT
-; 	SEC
-; 	SBC		#12H
-; 	RTS
-; L_12_24_Prog_5:
-; 	JSR		L_Clr_lcd_AM_Prog
-; 	JSR		L_Clr_lcd_PM_Prog
-; 	LDA		P_Temp
-; 	RTS
+L_12_24_Prog:;12小时和24小时切换
+	STA		P_Temp	
+	BBS2	Sys_Flag_B,L_12_24_Prog_5;判断是24小时制跳转退出
+	LDA		P_Temp
+	BEQ		L_12_24_Prog_1;为0是跳转
+	CMP		#11H
+	BEQ		L_12_24_Prog_4
+	BCS		L_12_24_Prog_3;比12大时跳转
+L_12_24_Prog_4:
+	JSR		L_Display_AM_Prog
+	JSR		L_Clr_PM_Prog
+	LDA		P_Temp
+L_12_24_Prog_OUT:
+	RTS
+L_12_24_Prog_1:;0点
+	JSR		L_Display_AM_Prog
+	JSR		L_Clr_PM_Prog
+	LDA		#12H
+	RTS
+L_12_24_Prog_3:
+	JSR		L_Clr_AM_Prog
+	JSR		L_Display_PM_Prog
+	LDA		P_Temp
+	CMP		#12H
+	BEQ		L_12_24_Prog_OUT
+	SEC
+	SBC		#12H
+	RTS
+L_12_24_Prog_5:
+	JSR		L_Clr_AM_Prog
+	JSR		L_Clr_PM_Prog
+	LDA		P_Temp
+	RTS
 

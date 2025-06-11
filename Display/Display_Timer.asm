@@ -1,16 +1,30 @@
+L_Display_Timer_Prog:
+    JSR     L_Display_Col_Timer_Prog
+    JSR     L_Display_Timer_Symbol_Prog
+    JSR     L_Display_Timer_Min_Prog
+    JSR     L_Display_Timer_Sec_Prog
+    JSR     L_Display_Timer_TurnPlate_Prog
+    RTS
+
+
+
+
 L_Display_Timer_Min_Prog:
     LDA     R_Timer_Min
     AND     #F0H
-    LDX     #lcd_d19
+    JSR		L_ROR_4Bit_Prog
+    LDX     #lcd_d18
     JSR     L_Dis_8Bit_DigitDot_Prog
     LDA     R_Timer_Min
     AND     #0FH
+    
     LDX     #lcd_d19
     JSR     L_Dis_8Bit_DigitDot_Prog
     RTS
 L_Display_Timer_Sec_Prog:
     LDA     R_Timer_Sec
     AND     #F0H
+    JSR		L_ROR_4Bit_Prog
     LDX     #lcd_d20
     JSR     L_Dis_8Bit_DigitDot_Prog
     LDA     R_Timer_Sec
@@ -100,12 +114,17 @@ L_Display_Timer_TurnPlate_Prog:
     DW      L_Display_S57_Prog-1
     DW      L_Display_S58_Prog-1
     DW      L_Display_S59_Prog-1
-
+    DW      L_Display_S60_Prog-1
 ;===========================================================
 L_Clr_Timer_TurnPlate_Prog:
-    ; JSR     L_Clr_S60_Prog
+    
+    LDA     R_Timer_Min
+    BNE     L_Clr_Timer_TurnPlate_Prog_1  
+    JSR     L_Clr_S60_Prog  
+L_Clr_Timer_TurnPlate_Prog_1:
+
     CLC
-    ClD
+    CLD
     LDA     R_Timer_Min
     ROL
     TAX
@@ -114,7 +133,7 @@ L_Clr_Timer_TurnPlate_Prog:
     LDA     Table_TurnPlate_Clr,X
     PHA
     RTS
- Table_TurnPlate_Clr:
+Table_TurnPlate_Clr:
     DW      L_Clr_S0_Prog-1
     DW      L_Clr_S1_Prog-1
     DW      L_Clr_S2_Prog-1
@@ -175,5 +194,12 @@ L_Clr_Timer_TurnPlate_Prog:
     DW      L_Clr_S57_Prog-1
     DW      L_Clr_S58_Prog-1
     DW      L_Clr_S59_Prog-1
+    DW      L_Clr_S60_Prog-1
+?R_RTS:
+    RTS
 
-    
+; L_Display_Timer_TurnPlate_Prog:
+;     LDA     R_Timer_Min_Backup
+;     BEQ     ?R_RTS
+;     JSR     L_Display_S60_Prog
+;     JSR     

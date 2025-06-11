@@ -403,7 +403,7 @@ lcd_S56			.EQU	lcd_S0+56
 lcd_S57			.EQU	lcd_S0+57	
 lcd_S58			.EQU	lcd_S0+58	
 lcd_S59			.EQU	lcd_S0+59
-lcd_s60			.EQU	lcd_S0+60
+lcd_S60			.EQU	lcd_S0+60
 lcd_X1			.EQU	lcd_S0+61	
 lcd_X2			.EQU	lcd_S0+62	
 lcd_X3			.EQU	lcd_S0+63	
@@ -431,6 +431,21 @@ lcd_P3			.EQU	lcd_S0+84
 lcd_AM			.EQU	lcd_S0+85
 lcd_PM			.EQU	lcd_S0+86
 lcd_C			.EQU	lcd_S0+87
+
+lcd_Week		.EQU	lcd_X1
+lcd_Voice		.EQU	lcd_X3
+lcd_Sclient		.EQU	lcd_X4
+lcd_Alarm_Clock_1	.EQU	lcd_X5
+lcd_Alarm_Clock_2	.EQU	lcd_X6
+lcd_Alarm_Clock_3	.EQU	lcd_X7
+lcd_Alarm_Clock_4	.EQU	lcd_X8
+lcd_Alarm_Clock_5	.EQU	lcd_X9
+
+
+
+
+
+
 ;=============.EQU	lcd_=============================================
 ;==========================================================
 Lcd_bit:
