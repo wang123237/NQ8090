@@ -1,5 +1,4 @@
 L_Display_Timer_Prog:
-    JSR     L_Display_Col_Timer_Prog
     JSR     L_Display_Timer_Symbol_Prog
     JSR     L_Display_Timer_Min_Prog
     JSR     L_Display_Timer_Sec_Prog
@@ -120,7 +119,7 @@ L_Clr_Timer_TurnPlate_Prog:
     
     LDA     R_Timer_Min
     BNE     L_Clr_Timer_TurnPlate_Prog_1  
-    JSR     L_Clr_S60_Prog  
+    ; JSR     L_Clr_S60_Prog  
 L_Clr_Timer_TurnPlate_Prog_1:
 
     CLC

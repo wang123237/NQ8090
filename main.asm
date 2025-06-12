@@ -78,12 +78,13 @@ V_RESET:
 	RMB0	DIVC
 	SMB1	DIVC
 	SMB5	DIVC
-	TMR1_CLK_512Hz;初始化定时器1为256hz,定时器2为512hz
+	; TMR1_CLK_512Hz;初始化定时器1为256hz,定时器2为512hz
 	; LDA		#174
 	; STA		TMR2
 	LCD_ON
-	TMR1_ON;半秒计时
-	EN_TMR1_IRQ              ;定时器和LCD使能
+	; TMR1_ON;半秒计时
+	; EN_TMR1_IRQ              ;定时器和LCD使能
+	TMR2_ON
 	EN_PA_IRQ;下降沿触发
 	LDA		#$07		;#$07    系统时钟和中断使能
 	STA		SYSCLK		;Strong
@@ -191,11 +192,12 @@ L_EndIrq:
 ; 
 .INCLUDE	Half_s\Half.asm
 .INCLUDE	Half_s\Clock.asm
-; .INCLUDE	Half_s\Alarm_Clock.asm
-; .INCLUDE	Half_s\Common.asm
-; .INCLUDE	Half_s\Flash.asm
+.INCLUDE	Half_s\Alarm_Clock.asm
+.INCLUDE	Half_s\Timer.asm
+.INCLUDE	Half_s\Common.asm
+.INCLUDE	Half_s\Flash.asm
 ; 
-; .INCLUDE	Sound\Beep.asm
+.INCLUDE	Sound\Beep.asm
 
 
 .INCLUDE	RFC\RFC.asm

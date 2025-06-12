@@ -7,17 +7,17 @@ L_Update_Timer_Min_Prog:
     JMP     L_Inc_To_60_Prog
 ; ----------------------------------------------------
 L_Update_Timer_Min_Prog_Desitive:
-	LDX		#(R_Timer_Min_Countdown-Time_Str_Addr)
+	LDX		#(R_Timer_Min-Time_Str_Addr)
 	JMP		L_Dec_To_60_Prog
 ;----------------------------------------------------
 L_Update_Timer_Sec_Prog_Desitive:
-	LDX		#(R_Timer_Sec_Countdown-Time_Str_Addr)
+	LDX		#(R_Timer_Sec-Time_Str_Addr)
 	JMP     L_Dec_To_60_Prog
 ;====================================================
 
 L_Control_Timer_Prog
     BBS4    Sys_Flag_D,L_Timer_Prog_OUT
-    BBR1    Sys_Flag_D,L_Timer_Prog_OU
+    BBR1    Sys_Flag_D,L_Timer_Prog_OUT
     BBS1    Sys_Flag_D,L_Desitive_Timer
 
 

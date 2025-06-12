@@ -23,7 +23,7 @@ L_Scankey_Prog_Ineffective:
 	LDA		#10001011B
 	AND		Sys_Flag_A
 	STA		Sys_Flag_A
-	
+	CLR_KEY_IRQ_FLAG
 	EN_PA_IRQ
 	RTS
 

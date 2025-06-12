@@ -6,7 +6,7 @@ L_Display_Time_Prog:
 	JSR		L_Display_Time_Week_Prog
 	JSR		L_Display_Time_Month_Prog
 	JSR		L_Display_Time_Year_Prog
-	LDA		Sys_Flag_F
+	LDA		R_Alarm_Open
 	BEQ		L_Display_Time_Prog_RTS
 	JSR		L_Display_Prog_Under_Time_Mode
 L_Display_Time_Prog_RTS:

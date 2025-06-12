@@ -45,6 +45,8 @@ L_Display_Prog_Init:
     JSR     F_DispSymbol
     LDX     #lcd_C
     JSR     F_DispSymbol
+    LDX     #lcd_P2
+    JSR     F_DispSymbol
     RTS
 ;==============================================
 L_Display_Col_Time_Prog:

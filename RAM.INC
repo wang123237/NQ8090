@@ -59,16 +59,15 @@ Sys_Flag_D				DS	1	;计时器模式的系统状态
 ; bit7	=
 Sys_Flag_E				DS	1	 ;编码器必备标志
 ; bit0 	=	0正旋转/1反旋转
-; bit1	=
-; bit2	=
-; bit3	
+; bit1	=	0没有旋转/1存在旋转
+; bit2	=	0是慢旋转，1是快旋转
+; bit3	=
 ; bit4 	=
 ; bit5 	=
 ; bit6	=	
 ; bit7	=
 
-Sys_Flag_F				DS	1		;判断闹钟是否打开
-Sys_Flag_H				DS	1		;判断哪个闹钟响闹
+
 
 
 R_Reset_Time					DS	1;全显时间,一般为2s
@@ -119,22 +118,25 @@ R_Timer_Min_Backup				DS	1;定时器显示时间/正计时时间分钟
 
 R_Alarm_Open					DS	1	;判断闹钟是否开启
 R_Alarm_Beep					DS	1	;判断那个闹钟
+R_Alarm_Open_State				DS	1	;判断开启的闹钟是什么状态
 
 R_Alarm_Clock_State				DS	5;0是一次性闹钟，1是每天闹钟，2是工作日闹钟，3是周末闹钟
 R_Alarm_Clock_Hr				DS	5
 R_Alarm_Clock_Min				DS	5
 R_Snz_Time						DS	5
+R_Snz_Time_Last					DS	1
 
 
 
 D_Beep_Open_Last_Time_Alarm		EQU	21
-
+D_Beep_Open_Last_Time_Timer		EQU	20
 
 D_Snz_Time						EQU	5
 D_Snz_Frequency					EQU	6
 
-
+R_Mode							DS	1
 R_Mode_Set					DS	1;设置模式
+
 
 Konb_Last_State				DS	1
 
@@ -197,10 +199,10 @@ R_Bat_Data						DS	1
 ;---------------------------------------
 ;---------------------------------------
 R_Set_Mode_Exit_Time			DS	1;自动设置退出时间
-D_Set_Mode_Exit_Time			EQU	6
+D_Set_Mode_Exit_Time			EQU	31
 R_Alarm_Clock_Open_Beep_Time	DS	1;32Hz转化为16hz
 R_Close_Beep_Time				DS	1;闹铃关闭时间，闹铃响多久
 R_Voice_Unit					DS	1;闹铃响的次数，一秒响几次
-R_Mode							DS	1
+
 
 .ENDS

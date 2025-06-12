@@ -62,7 +62,7 @@ L_Display_Alarm_Clock_Min_Prog:
     TXA
     CLC
     ADC     P_Temp
-    TXA
+    TAX
     LDA     RAM,X
     STA     P_Temp+6
     AND     #0FH
@@ -83,7 +83,7 @@ L_Display_Alarm_Clock_Hr_Prog:
     TXA
     CLC
     ADC     P_Temp
-    TXA
+    TAX
     LDA     RAM,X
     JSR     L_12_24_Prog
     STA     P_Temp+6
@@ -109,7 +109,7 @@ L_Display_Alarm_Clock_Snz_Time_Prog:
     TXA
     CLC
     ADC     P_Temp
-    TXA
+    TAX
     LDA     RAM,X
     STA     P_Temp+6
     AND     #0FH
@@ -131,7 +131,7 @@ L_Display_Alarm_Clock_State_Prog_Usually:
     TXA
     CLC
     ADC     P_Temp
-    TXA
+    TAX
     LDA     RAM,X
     CLC
     CLD
@@ -177,7 +177,7 @@ L_Display_Prog_Under_Time_Mode:
     RTS
 ;---------------------------------------------
 L_Display_Prog_Under_Time_Mode_1:
-    LDA     Sys_Flag_F
+    LDA     R_Alarm_Open
     CLC
     ROR
     BCC     L_Display_Prog_Under_Time_Mode_1_RTS
@@ -188,7 +188,7 @@ L_Display_Prog_Under_Time_Mode_1_RTS:
     RTS
 ;---------------------------------------------
 L_Display_Prog_Under_Time_Mode_2:
-    LDA     Sys_Flag_F
+    LDA     R_Alarm_Open
     CLC
     ROR
     ROR
@@ -200,7 +200,7 @@ L_Display_Prog_Under_Time_Mode_2_RTS:
     RTS
 ;---------------------------------------------
 L_Display_Prog_Under_Time_Mode_3:
-    LDA     Sys_Flag_F
+    LDA     R_Alarm_Open
     CLC
     ROR
     ROR
@@ -213,7 +213,7 @@ L_Display_Prog_Under_Time_Mode_3_RTS:
     RTS
 ;---------------------------------------------
 L_Display_Prog_Under_Time_Mode_4:
-    LDA     Sys_Flag_F
+    LDA     R_Alarm_Open
     CLC
     ROR
     ROR
@@ -227,7 +227,7 @@ L_Display_Prog_Under_Time_Mode_4_RTS:
     RTS
 ;---------------------------------------------
 L_Display_Prog_Under_Time_Mode_5:
-    LDA     Sys_Flag_F
+    LDA     R_Alarm_Open
     CLC
     ROR
     ROR
